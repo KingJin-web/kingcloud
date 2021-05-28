@@ -1,0 +1,142 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* 内容 */
+/* 内容头部背景色。 */
+.lly_content .lly_content_head{ 
+    width: 100%;
+    background-color:#5fcda6;
+}
+/* 姓名和签名 */
+.lly_infor{
+    display: inline-block;
+    margin-left: 5px;
+    width: 150px;
+    height: 50px;
+    color:white ;
+}
+.lly_infor p{
+    word-wrap: break-word;
+    font-size: 16px;
+}
+.lly_infor span{
+    display: block;
+    margin-top:10px ;
+    font-size: 12px;
+}
+
+.lly_content_head_right{
+    display: inline-block;
+    float: right;
+    height: 35px;
+    width: 200px;
+    border-radius: 15px;
+    line-height: 35px;
+    background-color: #fcd908;
+    text-align: center;
+    font-weight: normal;
+    margin-top: 50px;
+}
+.lly_content_head_right button{
+    background-color: #fcd908;
+    border: none;
+}
+/* 导航栏 */
+/* 搜索框 */
+lly_content_nav {
+    position: relative;
+}
+.lly_content_nav_right{
+    position: relative;
+    float: right;
+    height: 30px;
+    width: 220px;
+}
+.lly_search{
+    height: 30px;
+    width: 220px;
+    color: black;
+    border: 1px solid #5fcda6;
+    font-size: 12px;
+    padding-left: 5px;
+}
+.lly_content_nav div  div div i{
+    position: absolute;
+    font-size: 18px;
+    top: 5px;
+    right:5px;
+    color: #5fcda6;
+}
+.layui-tab-bar{
+    display: none;
+}
+
+
+/* 顺序 */
+.lly_smallnav{
+    position: absolute;
+    top:70px;
+    left: 0;
+}
+
+.lly_sequence  ul{
+    float: left;
+}
+.lly_sequence  ul li{
+    display: inline-block;
+    margin-left: 20px;
+}
+.lly_money ul{
+    float: right;
+}
+.lly_money ul li{
+    display: inline-block;
+    margin-right: 20px;
+}
+.lly_wordColor{
+    color: #5fcda6;
+}
+/* 课程列表 */
+.lly_classContent{
+    display: flex;
+    margin-top: 50px;
+    flex-wrap: wrap;
+}
+
+.lly_classBox{
+    position: relative;
+    height: 180px;
+    width: 230px;
+    margin-right:22px ;
+    margin-top: 10px;
+}
+
+.lly_classBox div{
+    width: 230px;
+    height: 100px;
+}
+.lly_classBox div img{
+    width: 100%;
+    height: 100%;
+}
+
+.lly_classBox span{
+    display: block;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+.lly_classBox  button{
+    position: absolute;
+    bottom: 10px;
+    left: 40px;
+    height: 30px;
+    line-height: 30px;
+    width: 150px;
+    border: 1px solid #5fcda6;
+    color: #5fcda6;
+    background-color: white;
+    text-align: center;
+    border-radius: 15px;
+}

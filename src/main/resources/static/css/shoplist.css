@@ -1,0 +1,123 @@
+
+
+.lly_shopBox{
+    margin-top: 40px;
+}
+/* 我的购物车 */
+.lly_myshoplist p{
+    display: inline-block;
+}
+.lly_myshoplist p:last-child{
+    color: #d4d4c7;
+    margin-left: 5px;
+    font-size: 12px;
+}
+.lly_shopHead{
+    margin-top: 20px;
+    background-color: #f8f8f8;
+    height:auto;
+    line-height: 50px;
+}
+.lly_shopHead div:first-child{
+    padding-left: 10px;
+}
+ span{
+    padding-left: 5px;
+}
+
+/* 机构 */
+.lly_shopContent_head{
+    margin-top: 20px;
+    padding-left: 10px;
+}
+
+.lly_shopContent_head span{
+     padding-bottom: 20px;
+    
+}
+/* 内容主体 */
+.lly_shopContent_body{
+    background-color:#f8f8f8;
+    margin-top: 20px;
+    padding: 20px 0;
+}
+.lly_shopContent_body div:first-child{
+    padding-left: 10px;
+}
+
+.lly_shopContent_body div div{
+   height: 50px; 
+   width: 100px;
+   display: inline-block;
+}
+.lly_shopContent_body div div img{
+    width: 100%;
+    height: 100%;
+    padding-left: 5px;
+    padding-bottom: 20px;
+}
+
+
+/* 删除图标 */
+.lly_del{
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    color: #B2B2B2B2;
+}
+
+/* 小计 */
+.lly_countBox {
+   background-color: #eeeeee;
+   padding: 10px 0;
+}
+.lly_count{
+    display: block;
+    text-align: right;
+    padding-right: 8px;
+}
+
+/* 合计 */
+.lly_sumBox{
+    background-color: #eeeeee;
+    margin-top: 30px;
+    height: 60px;
+    line-height: 60px;
+}
+.lly_sumBox div:first-child{
+    padding-left: 8px;
+}
+.lly_sum{
+    display: block;
+    text-align: right;
+    padding-right: 8px;
+    line-height: 45px;
+}
+.lly_sum span{
+    display: inline-block;
+    font-size: 18px;
+    font-weight: bold;
+    color: red;
+}
+
+.lly_sum p{
+    display: block;
+    font-size: 10px;
+    color: #8f8f91;
+    line-height: 0;
+  
+}
+/* 结算按钮 */
+.lly_sumbtn{
+    background-color: #cccccc;
+    height: 100%;
+}
+.lly_sumbtn div{
+    text-align: center; 
+    color: white;
+    font-weight: bold;
+}
+
+.lly_sumbtn div:hover{
+    cursor: pointer;
+}

@@ -1,0 +1,93 @@
+body{
+    background-color: #f0f0f2;
+}
+.lly_p{
+    font-size: 10px;
+    color: #cccccc;
+}
+.lly_input{
+    width: 200px;
+}
+.lly_personContent{
+    margin-top: 30px;
+    background-color: #fafafa;
+}
+.layui-tab-card > .layui-tab-title{
+    background-color: white;
+    border-top: none;
+    border-left: none;
+    border-: none;
+}
+.layui-tab-card > .layui-tab-title .layui-this{
+    background-color: green;
+    color: white;
+}
+.layui-tab-title li{
+    min-width: 90px;
+}
+.lly_personBox .lly_title{
+    color: #cccccc;
+    font-size: 12px;
+}
+
+/* 基本信息 */
+.lly_personInfor{
+    margin-top: 20px;
+}
+.lly_personInfor.layui-form .layui-form-item label{
+    position: relative;
+    font-size: 14px; 
+    color: black;
+   
+}
+
+
+.lly_personInfor h2{
+    margin-bottom: 20px;
+}
+/* 头像 */
+.lly_personInfor_img{
+   
+}
+.lly_personInfor_img img{
+    width: 8%;
+}
+
+.lly_personInfor_img div{
+    display: inline-block;
+    margin-left: 10px;
+} 
+.lly_personInfor_img div input{
+    margin-top: 10px;
+    background-color: white;
+    width: 100px;
+    height: 30px;
+    border: 1px solid black;
+    border-radius:5px ;
+    padding-left: 10px;
+}
+.lly_personInfor_img div i{
+    position: absolute;
+    top: 40px;
+    left: 115px;
+    color: black;
+}
+
+/* 邮箱 */
+.lly_address{
+    padding-top: 10px;
+}
+.lly_address   a{
+    margin-left: 5px;
+    color: green;
+}
+
+.layui-input-block .layui-form-radio{
+    margin: 6px 0 0;
+    padding: 0;
+}
+/* 保存 */
+.layui-input-block button{
+    margin-top: 30px;
+    background-color: green;
+}

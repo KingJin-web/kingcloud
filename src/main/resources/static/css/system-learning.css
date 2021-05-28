@@ -1,0 +1,92 @@
+html,body{background: rgb(244,245,244)}
+.top_title{margin: 50px 0 40px 0}
+.top_title h1{font-size: 50px;margin-bottom:10px;font-weight: 600}
+.top_title span{font-weight: 100;color:#54555B;margin-left: 10px}
+.top_title p{width: 700px;color:#54555B;line-height: 25px}
+.lst_title{display: flex;margin-bottom: 30px}
+.lst_title ul{display: flex;flex-flow:column;align-items: center;padding-bottom: 40px;background: white}
+.lst_title h2{width: 290px;background: rgb(75,175,80);height: 50px;font-size: 15px;line-height: 50px;text-align: center;color: white;margin-bottom: 30px}
+.lst_title li{width: 120px;height: 30px;background:rgb(244,245,244);border-radius: 50px;line-height: 30px;text-align: center;margin: 10px 0 0 0}
+.lst_title i{padding: 160px 12px;color: rgb(75,175,80)}
+.bot_title h2{width:100%;background: rgb(75,175,80);height: 50px;font-size: 15px;line-height: 50px;text-align: center;color: white;}
+.bot_title ul{display: flex;align-items: center;justify-content: center;padding-bottom: 40px;background: white;padding-top: 40px}
+.bot_title li{width: 25%;text-align: center}
+.bot_title span{display: inline-block;width: 120px;height: 30px;background:rgb(244,245,244);border-radius: 50px;line-height: 30px;text-align: center;}
+.bot_title .sjx{width: 0;height: 0;border: 15px solid;border-color: transparent transparent rgb(75,175,80);margin:0 auto}
+/*  名师专区  */
+.teacher{
+    width: 85vw;
+    padding: 20px 20px 100px 20px;
+    margin: auto;
+    background-color: white;
+    margin-top: 50px;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+.teacher .xxm-info-right-in{overflow: hidden;}
+.xxm-info-right{
+    --swiper-navigation-size: 20px;
+    --swiper-navigation-color: #BFC0C1;
+}
+
+.teacher .swiper-slide{
+    height: 300px;
+}
+.teacher .xxm-info-right-in .icon,.student .icon{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-image: url("https://dss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3170788280,2078802227&fm=26&gp=0.jpg");
+    background-size: 100% 100%;
+    margin: auto;
+}
+.teacher .xxm-info-right-in p,.student p{display: flex;justify-content: center;margin-top: 20px;font-size: 14px;color: #878079;padding: 0 10px;box-sizing: border-box;
+}
+.teacher .xxm-info-right-in .icon-name,.student .icon-name{
+    font-size: 20px;color: black;
+}
+
+
+
+/*  好课推荐  */
+.xxm-tab-two{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 50px;
+}
+.xxm-tab-two .xxm-tab-item{
+    width: 24%;
+    height: 400px;
+}
+.xxm-tab-two .xxm-tab-item div{
+    height: 60%;
+    margin-bottom: 20px;
+}
+
+/*  学员推荐  */
+.student{
+    background-color: #F5F5F5;
+    --swiper-navigation-size: 40px;
+    font-weight: bold;
+    --swiper-navigation-color: #BFC0C1;
+    margin-bottom: 50px;
+}
+.student .swiper-slide{
+    background-color: white;height: 400px;margin-bottom: 50px;
+}
+
+
+.layui-main .title{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    font-size: 30px;
+    color: black;
+    margin-bottom: 40px;
+    font-weight: lighter;
+}
+
+
+
