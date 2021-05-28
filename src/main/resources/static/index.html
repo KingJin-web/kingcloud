@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>登入 - 刻课公开课</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="res/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="res/css/admin.css" media="all">
+    <link rel="stylesheet" href="res/css/login.css" media="all">
+    <script type='text/javascript' src='res/jquery-3.5.1.js'></script>
+    <script type="text/javascript" src="res/vue.js"></script>
+    <script type="text/javascript" src="js/Popup.js"></script>
+    <script type="text/javascript" src="res/axios.js"></script>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <link href="css/index.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+    <ul class="slideshow">
+        <li>
+            <span>Summer</span>
+        </li>
+        <li>
+            <span>Fall</span>
+        </li>
+        <li>
+            <span>Winter</span>
+        </li>
+        <li>
+            <span>Spring</span>
+        </li>
+
+    </ul>
+    <div class="layadmin-user-login-main" id="main">
+
+        <div class="layadmin-user-login-box layadmin-user-login-header">
+            <div class="alert alert-primary" role="alert">
+                <h2>KingDrive</h2>
+            </div>
+            <div class="alert alert-light" role="alert">
+                <div style="text-align:center ; margin: 0 auto;">
+                    一款基于 Hadoop 的安全网盘
+                </div>
+            </div>
+
+        </div>
+        <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-username"
+                       for="LAY-user-login-username"></label>
+                <input v-model="name" type="text" name="username" id="LAY-user-login-username" lay-verify="required"
+                       placeholder="用户名" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-password"
+                       for="LAY-user-login-password"></label>
+                <input v-model="pwd" type="password" name="password" id="LAY-user-login-password"
+                       lay-verify="required"
+                       placeholder="密码" class="layui-input">
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-row">
+                    <div class="layui-col-xs7">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-vercode"
+                               for="LAY-user-login-vercode"></label>
+                        <input v-model="vcode" type="text" name="vercode" id="LAY-user-login-vercode"
+                               lay-verify="required" placeholder="验证码  点击图片刷新" class="layui-input">
+
+                    </div>
+                    <div class="layui-col-xs5">
+                        <div style="margin-left: 10px;">
+                            <img src="verifyCodeServlet" class="layadmin-user-login-codeimg"
+                                 id="LAY-user-get-vercode"
+                                 onclick="this.src='verifyCodeServlet?date=' + new Date(); time = 60">
+                            <!--                            <span id="timer">00秒</span>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item" style="margin-bottom: 20px;">
+                <input type="checkbox" name="remember" lay-skin="primary" title="记住密码">
+                <a href="forget.html" class="layadmin-user-jump-change layadmin-link"
+                   style="margin-top: 7px;">忘记密码？</a>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-user-login-submit"
+                        @click="login">登
+                    入
+                </button>
+            </div>
+
+            <div class="layui-trans layui-form-item layadmin-user-login-other">
+                <label>社交账号登入</label>
+                <a href="javascript:;"><i class="layui-icon layui-icon-login-qq"></i></a>
+                <a href="javascript:;"><i class="layui-icon layui-icon-login-wechat"></i></a>
+                <a href="javascript:;"><i class="layui-icon layui-icon-login-weibo"></i></a>
+                <a href="register.html" class="layadmin-user-jump-change layadmin-link">注册帐号</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    let vue = new Vue({
+        el: "#main",
+        data: {
+            name: "",
+            pwd: "",
+            vcode: ""
+        },
+        methods: {
+            login() {
+                //  var time = new Date().getTime();
+                let url = "login";
+                axios.get(url, {
+                    params: {
+                        name: this.name,
+                        pwd: this.pwd,
+                        vcode: this.vcode
+                    }
+                }).then((res) => {
+                    alertLayer(res.data.msg, "user/index.html");
+                });
+            }
+        }
+    });
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>注册 - 刻课公开课</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="res/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="res/css/admin.css" media="all">
+    <link rel="stylesheet" href="res/css/login.css" media="all">
+    <script type="text/javascript" src="res/vue.js"></script>
+    <script type="text/javascript" src="js/Popup.js"></script>
+    <script type="text/javascript" src="res/axios.js"></script>
+</head>
+<body>
+
+
+<div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+    <div class="layadmin-user-login-main">
+		<div class="layadmin-user-login-box layadmin-user-login-header">
+		    <h2>刻课公开课</h2>
+		    <p></p>
+		</div>
+        <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-username"
+                       for="LAY-user-login-nickname"></label>
+                <input type="text" name="nickname" id="LAY-user-login-nickname" lay-verify="nickname" placeholder="昵称"
+                       class="layui-input"
+                       v-model="name">
+            </div>
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-email"
+                       for="LAY-user-login-cellemail"></label>
+                <input type="text" name="cellemail" id="LAY-user-login-cellemail" lay-verify="email" placeholder="邮箱"
+                       class="layui-input"
+                       v-model="email">
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-row">
+                    <div class="layui-col-xs7">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-vercode"
+                               for="LAY-user-login-vercode"></label>
+                        <input type="text" name="vercode" id="LAY-user-login-vercode" lay-verify="required"
+                               placeholder="验证码" class="layui-input" v-model="vcode">
+                    </div>
+                    <div class="layui-col-xs5">
+                        <div style="margin-left: 10px;">
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid"
+                                    id="LAY-user-getsmscode" @click="v_code">获取验证码
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-password"
+                       for="LAY-user-login-password"></label>
+                <input type="password" name="password" id="LAY-user-login-password" lay-verify="pass" placeholder="密码"
+                       class="layui-input"
+                       v-model="pwd1">
+            </div>
+            <div class="layui-form-item">
+                <label class="layadmin-user-login-icon layui-icon layui-icon-password"
+                       for="LAY-user-login-repass"></label>
+                <input type="password" name="repass" id="LAY-user-login-repass" lay-verify="required" placeholder="确认密码"
+                       class="layui-input"
+                       v-model="pwd2">
+            </div>
+
+            <div class="layui-form-item " >
+                <input  type="checkbox" id="checkbox" name="agreement" lay-skin="primary" title="<a href='agreement.html'>同意用户隐私协议</a>">
+            </div>
+
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-user-reg-submit" @click="register">
+                    注 册
+                </button>
+            </div>
+            <!--            <div class="layui-trans layui-form-item layadmin-user-login-other">-->
+            <!--                <label>社交账号注册</label>-->
+            <!--                <a href="javascript:;"><i class="layui-icon layui-icon-login-qq"></i></a>-->
+            <!--                <a href="javascript:;"><i class="layui-icon layui-icon-login-wechat"></i></a>-->
+            <!--                <a href="javascript:;"><i class="layui-icon layui-icon-login-weibo"></i></a>-->
+
+                            <a href="login.html" class="layadmin-user-jump-change layadmin-link layui-hide-xs">用已有帐号登入</a>
+                            <a href="login.html"
+                               class="layadmin-user-jump-change layadmin-link layui-hide-sm layui-show-xs-inline-block">登入</a>
+                        </div>
+        </div>
+    </div>
+
+    <div class="layui-trans layadmin-user-login-footer">
+
+<!--        <p>© 2018 <a href="http://www.layui.com/" target="_blank">layui.com</a></p>-->
+<!--        <p>-->
+<!--            <span><a href="http://www.layui.com/admin/#get" target="_blank">获取授权</a></span>-->
+<!--            <span><a href="http://www.layui.com/admin/pro/" target="_blank">在线演示</a></span>-->
+<!--            <span><a href="http://www.layui.com/admin/" target="_blank">前往官网</a></span>-->
+<!--        </p>-->
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    const vue = new Vue({
+        el: '#LAY-user-login',
+        data: {
+            name: "",
+            pwd1: "",
+            pwd2: "",
+            email: "",
+            vcode: "",
+            judge: ""
+        },
+        methods: {
+            v_code() {
+                let url = "user.do?op=setVcode";
+                axios.get(url, {
+                    params: {
+                        email: this.email,
+                        name: this.name,
+                    }
+                }).then((res) => {
+                    alertMy(res.data)
+                })
+            },
+            register() {
+                let url = "user.do?op=register";
+                if (!$("input[type='checkbox']").is(':checked')) {
+                    alertMy("请阅读并同意用户协议");
+                    return;
+                }
+                if (this.pwd1 !== this.pwd2) {
+                    alertMy("密码不一致");
+                    return;
+                }
+                axios.get(url, {
+                    params: {
+                        name: this.name,
+                        pwd: this.pwd1,
+                        email: this.email,
+                        vcode1: this.vcode
+                    }
+                }).then((res) => {
+                    alertLayer(res.data, "login.html");
+                })
+            }
+        }
+    });
+</script>
+</body>
+</html>
