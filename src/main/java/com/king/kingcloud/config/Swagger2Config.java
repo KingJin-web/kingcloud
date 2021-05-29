@@ -41,10 +41,10 @@ public class Swagger2Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("小萌神外卖订餐操作接口")
+                .title("KingD")
                 .description("springboot | swagger")
                 // 作者信息
-                .contact(new Contact("zhw", "http://www.huahuazhw.xyz", "824276226@qq.com"))
+                .contact(new Contact("king", "http://www.huahuazhw.xyz", "824276226@qq.com"))
                 .version("1.0.0")
                 .build();
     }

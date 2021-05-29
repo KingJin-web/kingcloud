@@ -36,7 +36,6 @@ public class UserBizImpl implements UserBiz {
     public boolean register(User user) {
         String pwd = encoder.encode(user.getPwd());
         boolean b = isUserName(user);
-        System.out.println(b);
         if (b) {
             return false;
         }
@@ -60,7 +59,6 @@ public class UserBizImpl implements UserBiz {
 
     @Override
     public boolean login(User user) {
-            System.out.println(user);
             String pwd = user.getPwd();
             user.setPwd(null);
             em = Example.of(user);

@@ -89,7 +89,7 @@ public class UserController {
      */
     @RequestMapping(value = "/login", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiOperation(value = "登录", notes = "登录")
-    @ApiImplicitParams({@ApiImplicitParam(name = "valcode", value = "验证码", required = true),
+    @ApiImplicitParams({@ApiImplicitParam(name = "vcode", value = "验证码", required = true),
             @ApiImplicitParam(name = "name", value = "用户名", required = true),
             @ApiImplicitParam(name = "pwd", value = "密码", required = true)}
     )

@@ -27,6 +27,7 @@ public class User {
 
     public User() {
     }
+    private String email;
 
     public User(Integer uid, String name, String pwd, String email) {
         this.uid = uid;
@@ -35,7 +36,6 @@ public class User {
         this.email = email;
     }
 
-    private String email;
 
 
 

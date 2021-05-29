@@ -1,8 +1,10 @@
 package com.king.kingcloud.controllers;
 
 import com.king.kingcloud.util.VerifyCodeUtils;
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +18,8 @@ import java.util.Date;
  * @author: King
  * @create: 2021-05-27 21:23
  */
+@RestController
+@Api(value = "验证码接口", tags = {"验证码"})
 public class ValCodeController {
     @RequestMapping(value = "/verifyCodeServlet", method = RequestMethod.GET)
     public void valcode(HttpServletRequest req, HttpServletResponse resp) throws IOException {
