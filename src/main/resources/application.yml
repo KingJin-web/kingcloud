@@ -1,22 +1,2 @@
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/kingcloud?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8
-    username: root
-    password: aaaa
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    database: mysql
-
-
 server:
-  port: 8080
-  servlet:
-    session:
-      timeout: 6000
-
-swagger:
-  enabled: true
+  port: 9090

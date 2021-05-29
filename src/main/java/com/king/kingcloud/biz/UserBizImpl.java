@@ -43,6 +43,7 @@ public class UserBizImpl implements UserBiz {
         user.setPwd(pwd);
         userDao.save(user);
         return true;
+
     }
 
     /**
@@ -59,17 +60,17 @@ public class UserBizImpl implements UserBiz {
 
     @Override
     public boolean login(User user) {
-        System.out.println(user);
-        String pwd = user.getPwd();
-        user.setPwd(null);
-        em = Example.of(user);
-        List<User> users = userDao.findAll(em);
-        if (users.size() == 0) {
-            return false;
-        }
-        User user1 = users.get(0);
+            System.out.println(user);
+            String pwd = user.getPwd();
+            user.setPwd(null);
+            em = Example.of(user);
+            List<User> users = userDao.findAll(em);
+            if (users.size() == 0) {
+                return false;
+            }
+            User user1 = users.get(0);
 
-        return encoder.matches(pwd, user1.getPwd());
+            return encoder.matches(pwd, user1.getPwd());
     }
 
 

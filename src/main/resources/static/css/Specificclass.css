@@ -1,0 +1,25 @@
+body{overflow-x: hidden;}
+.xxm-title-top{display: flex;align-items: center;justify-content: space-between;padding: 10px 0;color: #AEADB2;}
+.xxm-title-top a{color: #A09FA4;}
+.xxm-title-top a:hover{color: #A09FA4;}
+.xxm-title-top div{display: flex;align-items: center;height: 30px;background-color: #EDF8EE;padding: 7px 30px;color: #78B863;}
+.xxm-title-top div i{margin-left: 10px;font-size: 22px;margin-top: -3px;}
+.layui-tab-title{border: none;}
+/*  头部选项卡 */
+.xxm-tab-one .layui-tab-title li{padding: 0 ;margin-right: 15px;margin-left: -5px;}
+.xxm-tab-one .layui-tab-title .layui-this{color: #78B863;}
+.xxm-tab-one .layui-tab-title .layui-this:after{border:none;}
+.xxm-tab-one .layui-show {display: flex!important;justify-content: space-between;height: 50px;}
+.xxm-tab-one .layui-show ul{display: flex;align-items: center;}
+.xxm-tab-one .layui-show ul li{margin:10px  10px 20px 0;cursor: pointer;}
+.xxm-tab-one .layui-show ul li:hover{color: #78B863;}
+/*  内容  */
+.ready-item-one{margin-right: 15px;}
+.xxm-ready-item{width: 19%;height: 250px;border-radius: 5px;overflow: hidden;cursor: pointer;}
+.xxm-ready .xxm-ready-item div{width: 100%;height: 65%;background-color: white;margin-bottom: 10px;}
+.xxm-ready .xxm-ready-item p:last-child{margin-top: 10px;color: #A09FA4;font-size: 12px;}
+
+/*  内容选项卡 推荐、畅销、全部*/
+.xxm-tab-two .layui-tab{margin-top: 200px;}
+
+

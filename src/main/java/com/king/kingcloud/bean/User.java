@@ -24,6 +24,7 @@ public class User {
     private String name;
     private String pwd;
 
+
     public User() {
     }
 
@@ -35,5 +36,8 @@ public class User {
     }
 
     private String email;
+
+
+
 
 }
