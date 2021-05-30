@@ -16,6 +16,7 @@
     <properties>
         <java.version>1.8</java.version>
         <spring-native.version>0.10.0-SNAPSHOT</spring-native.version>
+        <hadoop.version>2.7.3</hadoop.version>
     </properties>
     <dependencies>
         <dependency>
@@ -79,7 +80,17 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-
+        <!-- hadoop依赖 -->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
 
 
     </dependencies>

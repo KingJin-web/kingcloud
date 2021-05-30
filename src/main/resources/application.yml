@@ -22,7 +22,6 @@ logging:
   level:
     root: warn
     org.springframework: warn
-    com.yc: info
   file:
     path: ./logs
     name: yc_mybank.log

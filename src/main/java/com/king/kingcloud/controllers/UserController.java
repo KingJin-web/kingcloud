@@ -2,6 +2,7 @@ package com.king.kingcloud.controllers;
 
 import com.king.kingcloud.bean.User;
 import com.king.kingcloud.biz.UserBizImpl;
+import com.king.kingcloud.util.HdfsUtil;
 import com.king.kingcloud.vo.JsonModel;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -29,6 +30,9 @@ public class UserController {
     @Autowired
     private UserBizImpl userBiz;
 
+    @Autowired
+    private HdfsUtil hdfsUtil;
+
     /**
      * 注册
      *
@@ -45,8 +49,7 @@ public class UserController {
             @ApiImplicitParam(name = "pwd2", value = "密码", required = true),
             @ApiImplicitParam(name = "email", value = "邮箱", required = false)}
     )
-    public JsonModel
-    registerOp( JsonModel jm, String name, String pwd1, String pwd2,String email) {
+    public JsonModel registerOp(JsonModel jm, String name, String pwd1, String pwd2, String email) {
         if (name == null || "".equals(name)) {
             jm.setCode(0);
             jm.setMsg("请输入用户名！");
@@ -57,7 +60,7 @@ public class UserController {
             jm.setMsg("请输入密码！");
             return jm;
         }
-        System.out.println(pwd1 + " " +pwd2);
+        System.out.println(pwd1 + " " + pwd2);
         if (!pwd1.equals(pwd2)) {
             jm.setCode(0);
             jm.setMsg("两次密码不一致请重新输入！");
@@ -67,6 +70,7 @@ public class UserController {
         if (userBiz.register(user)) {
             jm.setCode(1);
             jm.setMsg("注册成功！");
+            hdfsUtil.mkdir(name);
             return jm;
         } else {
             jm.setCode(0);
@@ -93,8 +97,7 @@ public class UserController {
             @ApiImplicitParam(name = "name", value = "用户名", required = true),
             @ApiImplicitParam(name = "pwd", value = "密码", required = true)}
     )
-    public JsonModel
-    loginOp(HttpSession session, JsonModel jm, String vcode, String name, String pwd) {
+    public JsonModel loginOp(HttpSession session, JsonModel jm, String vcode, String name, String pwd) {
         if (name == null || "".equals(name)) {
             jm.setCode(0);
             jm.setMsg("请输入用户名！");
@@ -132,7 +135,7 @@ public class UserController {
         if (userBiz.login(u)) {
             //保存这个用户：在数据库中保存用户状态
             //TODO 更好的方案是使用一个数据库/Redis 来储存
-            session.setAttribute("name", u);
+            session.setAttribute("name", u.getName());
             jm.setCode(1);
             jm.setMsg("登陆成功");
 
@@ -140,6 +143,22 @@ public class UserController {
             jm.setCode(0);
             jm.setMsg("用户名或密码错误！");
         }
+        return jm;
+    }
+
+    @RequestMapping(value = "/getUser", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation(value = "获取用户信息", notes = "User")
+    public JsonModel getUser(HttpSession session, JsonModel jm) {
+        String name = (String) session.getAttribute("name");
+        System.out.println(name);
+        if (name == null||name.equals("null")) {
+            jm.setCode(0);
+            jm.setMsg("您没有登录 请先登录!");
+        } else {
+            jm.setCode(1);
+            jm.setObj(userBiz.getUserByName(name));
+        }
+
         return jm;
     }
 }

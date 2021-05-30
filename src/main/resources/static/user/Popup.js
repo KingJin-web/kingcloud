@@ -77,11 +77,25 @@ function gotoLogin() {
     }, function () {
         window.location.href = "login.html";
     })
+}
+
+/**
+ * 如果没有登录
+ * 请先登录，跳转登录界面
+ * 3秒后自动跳转
+ */
+function gotoLogin(text,path) {
+    layer.confirm(text, {
+        icon: 2,
+        shade: 1,
+        btn: ['确认'], //按钮
+        // window.location.href = "login.html";
+    }, function () {
+        window.location.href = path;
+    })
 
 
 }
-
-
 /**
  * //https://layer.layui.com/
  * https://layer.layui.com/test/more.html
@@ -101,7 +115,12 @@ function alertLayer(text, path) {
             window.location.href = path;
         })
 
-    } else {
+    } else if (text.includes("错误")){
+        layer.alert(text, {
+            icon: 2,
+            skin: 'layer-ext-moon'
+        })
+    }  else {
         layer.alert(text, {
             icon: 3,
             skin: 'layer-ext-moon'

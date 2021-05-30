@@ -25,4 +25,11 @@ public interface UserBiz {
      * @return
      */
     public boolean login(User user);
+
+    /**
+     * 通过用户名查询用户信息
+     * @param name
+     * @return
+     */
+    public User getUserByName(String name);
 }

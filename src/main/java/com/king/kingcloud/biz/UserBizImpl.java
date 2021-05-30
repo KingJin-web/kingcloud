@@ -59,16 +59,32 @@ public class UserBizImpl implements UserBiz {
 
     @Override
     public boolean login(User user) {
-            String pwd = user.getPwd();
-            user.setPwd(null);
-            em = Example.of(user);
-            List<User> users = userDao.findAll(em);
-            if (users.size() == 0) {
-                return false;
-            }
-            User user1 = users.get(0);
+        String pwd = user.getPwd();
+        user.setPwd(null);
+        em = Example.of(user);
+        List<User> users = userDao.findAll(em);
+        if (users.size() == 0) {
+            return false;
+        }
+        User user1 = users.get(0);
 
-            return encoder.matches(pwd, user1.getPwd());
+        return encoder.matches(pwd, user1.getPwd());
+    }
+
+    /**
+     * 通过用户名查询用户信息
+     *
+     * @param name
+     * @return
+     */
+    @Override
+    public User getUserByName(String name) {
+        User user = new User();
+        user.setName(name);
+        em = Example.of(user);
+        user = userDao.findAll(em).get(0);
+        user.setPwd(null);
+        return user;
     }
 
 
