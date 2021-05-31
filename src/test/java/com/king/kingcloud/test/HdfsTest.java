@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,7 +54,10 @@ public class HdfsTest {
     @Test
     public void mkdir() throws Exception {
         // 需要传递一个Path对象
-        boolean result = fileSystem.mkdirs(new Path("/king"));
+        boolean result = fileSystem.mkdirs(new Path("/king/中文"));
+        result = fileSystem.mkdirs(new Path("/king/文件夹4"));
+        result = fileSystem.mkdirs(new Path("/king/文件夹6"));
+        result = fileSystem.mkdirs(new Path("/king/文件夹5"));
         System.out.println(result);
     }
     //hdfs://node1:9000/king/c91-s2-xm.sql
@@ -62,21 +66,31 @@ public class HdfsTest {
     /**
      * 创建文件
      */
-    @Test
-    public void write() throws Exception {
+    public void write(String s) throws Exception {
         // 创建文件
-        FSDataOutputStream outputStream = fileSystem.create(new Path("/king/a.txt"));
+        FSDataOutputStream outputStream = fileSystem.create(new Path("/king/" + s));
         // 写入一些内容到文件中
-        outputStream.write(("Hello Hadoop! Hello Java! Hello 世界!" +
+        outputStream.write(("Hello Hadoop! Hello Java! Hello 世界!" + "Hello Hadoop! Hello Java! Hello 世界!" +"Hello Hadoop! Hello Java! Hello 世界!" +
                 "\nHello Hadoop! Hello Java! Hello 世界!").getBytes(StandardCharsets.UTF_8));
         outputStream.flush();
         outputStream.close();
     }
 
     @Test
+    public void write()  {
+        try {
+            write("文件4.txt");     write("文件5.txt");
+            write("文件6.txt");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
     public void read() throws IOException {
 
-        FSDataInputStream fsDataInputStream = fileSystem.open(new Path("/king/a.txt"));
+        FSDataInputStream fsDataInputStream = fileSystem.open(new Path("/king/文件1.txt"));
 
         InputStreamReader isr = new InputStreamReader(fsDataInputStream);
         BufferedReader bf = new BufferedReader(isr);
@@ -133,7 +147,7 @@ public class HdfsTest {
      */
     @Test
     public void download() throws IOException {
-        Path path1 = new Path("/king/a.txt");
+        Path path1 = new Path("/king/中文.txt");
         Path path2 = new Path("D:/");
         fileSystem.copyToLocalFile(path1, path2);
     }

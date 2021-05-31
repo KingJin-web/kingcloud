@@ -4,15 +4,18 @@
     <meta charset="UTF-8">
     <title>KingDrive</title>
 </head>
+<script type='text/javascript' src='../res/jquery-3.5.1.js'></script>
 <script type="text/javascript" src="Popup.js"></script>
 <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="../bootstrap/js/bootstrap.min.js"></script>
 <script src="../res/axios.js"></script>
-<body>
+<script type="text/javascript" src="/res/vue.js"></script>
+<script src="../res/layui/layui.all.js"></script>
+<body onload="queryFile(' ')">
 
 <div class="layui-layout layui-layout-admin" id="main">
-    <div class="layui-header layui-bg-cyan">
+    <div class="layui-header layui-bg-cyan" id="head">
         <div class="layui-logo layui-hide-xs layui-bg-blue">KingDrive</div>
         <!-- 头部区域（可配合layui 已有的水平导航） -->
         <ul class="layui-nav layui-layout-left layui-bg-cyan">
@@ -74,65 +77,152 @@
         </div>
     </div>
 
-    <div class="layui-body layui-bg-gray" id="body">
+    <div id="bodyS" class="layui-body layui-bg-gray">
         <!-- 内容主体区域 -->
-        <div style="padding: 15px;width: 100%">
-
-            <button class="layui-btn" id="demo1">
-                下拉菜单
-                <i class="layui-icon layui-icon-down layui-font-12"></i>
-            </button>
-
-
-        </div>
 
         <div style="padding: 15px;width: 100%">
             <div class="col-lg-6" style="width: 100%">
                 <div class="input-group">
                     <input type="text" class="form-control"/>
                     <span class="input-group-btn">
-						<button class="btn btn-default" type="button">
+						<button class="btn btn-default" type="button" onclick="queryFile(' ')">
 							Go!
 						</button>
 					</span>
                 </div><!-- /input-group -->
             </div><!-- /.col-lg-6 -->
-            <div style="padding: 15px;">
-                aaa
-
-            </div>
         </div>
+        <div style="padding: 15px;width: 100%" id="fileTable">
 
+            <table id="singers" lay-filter="demo" style="height: 52%">
+                <thead>
+                <tr>
+
+                    <th lay-data="{field:'username', width:300}">文件名</th>
+
+                    <th lay-data="{field:'experience', width:80, sort:true}">大小</th>
+                    <th lay-data="{field:'sign' , sort:true}">修改日期</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
         <div class="layui-footer">
             <!-- 底部固定区域 -->
             底部固定区域
         </div>
     </div>
 </div>
-<script src="../res/layui/layui.js"></script>
+<script type="text/javascript">
+
+    function queryFile(path) {
+        let files = [];
+
+        axios.post('/getFile?path=' + path).then(res => {
+            if (res.data.code === 1) {
+                files = res.data.obj;
+                console.log(files)
+                var $table = $("#singers");
+                //文件大小
+                var filesize = "";
+                var isDir = "";
+                //添加成员（members）、生日（birthday）字段和头像（head）字段的展示
+                for (const i of files) {
+                    console.log(i.path)
+
+                    if (i.isDirectory === true) {
+                        filesize = " ";
+                        isDir = "<img style='height: 20px;width: 20px'  src='../res/svg/文件夹.png'>"
+                    } else {
+                        filesize = i.fileSize + " kb";
+                        isDir = "<img style='height: 20px;width: 20px' src='../res/svg/文件.png' alt=''>"
+                    }
+                    $table.append("<tr>" +
+                        "<td>" + isDir + "&nbsp;&nbsp;&nbsp;&nbsp;" + i.name + "</td>" +
+                        "<td>" + filesize + "</td>" +
+                        "<td>" + i.modification_time + "</td>" +
+                        "</tr>");
+
+                    var table = layui.table;
+
+                    //转换静态表格
+                    table.init('demo', {
+                        height: 600 //设置高度
+                        , limit: 10 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
+                        , page: true //开启分页
+                        //支持所有基础参数
+                    });
+                }
+            }
+        });
+
+
+    }
+
+    // const Table = new Vue({
+    //     el: '#fileTable',
+    //     data: {
+    //         files: [],
+    //         path: ''
+    //     },
+    //     mounted: function () {
+    //
+    //         var that =this;
+    //         axios.post('/getFile?path=' + this.path).then(res => {
+    //             if (res.data.code === 1) {
+    //                 that.files = res.data.obj;
+    //                 console.log(this.files)
+    //             }
+    //         });
+    //         var table = layui.table;
+    //
+    //         //转换静态表格
+    //         table.init('demo', {
+    //             height: 315 //设置高度
+    //             , limit: 10 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
+    //             //支持所有基础参数
+    //         });
+    //     }
+    // });
+</script>
 <script type="text/javascript">
     const king = new Vue({
         el: '#main',
         data: {
             user: {}, //用户信息
-
+            // files: [],
+            // path: ""
         },
         mounted: function () {
             axios.post('/getUser').then(res => {
                 if (res.data.code === 0) {
-                    gotoLogin(res.data.msg,"/index.html");
+                    gotoLogin(res.data.msg, "/index.html");
                 } else {
                     this.user = res.data.obj;
                 }
             });
-
+            // axios.post('/getFile?path=' + this.path).then(res => {
+            //     if (res.data.code === 1) {
+            //         console.log( res.data.obj);
+            //         this.files = res.data.obj;
+            //         console.log( this.files);
+            //     }
+            // });
+            // tables.getFiles();
+            //  console.log(tables.files)
         }
     });
+
 </script>
+
+
+<!--表格渲染-->
 
 
 <script>
     //JS
+
     layui.use(['element', 'layer', 'util'], function () {
         var element = layui.element
             , layer = layui.layer

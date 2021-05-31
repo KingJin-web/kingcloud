@@ -1,14 +1,18 @@
 package com.king.kingcloud.util;
 
+import com.king.kingcloud.bean.HdfsFileStatus;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @program: kingcloud
@@ -61,20 +65,46 @@ public class HdfsUtil {
         System.out.println(result);
     }
 
-    public void query(String name, String pathS) {
-        Path path = new Path("/" + name + pathS);
-        FileStatus[] fileStatuses = new FileStatus[0];
+    public List<HdfsFileStatus> query(String name, String pathS) {
+        Path path;
+        if (pathS == null || pathS.equals("")) {
+            path = new Path("/" + name);
+        } else {
+            path = new Path("/" + name + "/" + pathS);
+        }
+
+        FileStatus[] fileStatuses;
+        List<HdfsFileStatus> list = new ArrayList<>();
         try {
             fileStatuses = fileSystem.listStatus(path);
+
+
+            for (FileStatus fileStatus : fileStatuses) {
+                HdfsFileStatus hfs = new HdfsFileStatus();
+                //获取文件名
+                hfs.setName(getFileName(fileStatus.getPath()));
+                hfs.setPath(fileStatus.getPath());
+                //获取文件是否为文件夹
+                hfs.setIsDirectory(fileStatus.isDirectory());
+                //文件上次修改时间
+                hfs.setModification_time(TimeUtil.timeToString(fileStatus.getModificationTime()));
+                hfs.setAccess_time(TimeUtil.timeToString(fileStatus.getAccessTime()));
+                //获取文件实际大小
+                hfs.setFileSize((fileSystem.getContentSummary(fileStatus.getPath()).getSpaceConsumed()) / 3);
+                hfs.setBlocksize(fileStatus.getBlockSize());
+                list.add(hfs);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        for (int i = 0; i < fileStatuses.length; i++) {
-            //System.out.println(fileStatuses[i]);
-            System.out.println(fileStatuses[i].getPath());
-        }
-        for (FileStatus fileStatus: fileStatuses){
-            System.out.println(fileStatus);
-        }
+
+        return list;
+
+    }
+
+    public String getFileName(Path path) {
+        Assert.notNull(path, "");
+        String file = String.valueOf(path);
+        return file.substring(file.lastIndexOf("/") + 1);
     }
 }

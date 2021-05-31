@@ -33,6 +33,8 @@ public class UserController {
     @Autowired
     private HdfsUtil hdfsUtil;
 
+    private JsonModel jm;
+
     /**
      * 注册
      *
@@ -49,7 +51,8 @@ public class UserController {
             @ApiImplicitParam(name = "pwd2", value = "密码", required = true),
             @ApiImplicitParam(name = "email", value = "邮箱", required = false)}
     )
-    public JsonModel registerOp(JsonModel jm, String name, String pwd1, String pwd2, String email) {
+    public JsonModel registerOp( String name, String pwd1, String pwd2, String email) {
+        jm = new JsonModel();
         if (name == null || "".equals(name)) {
             jm.setCode(0);
             jm.setMsg("请输入用户名！");
@@ -85,7 +88,6 @@ public class UserController {
      * //登录
      *
      * @param session
-     * @param jm
      * @param vcode
      * @param name
      * @param pwd
@@ -97,7 +99,8 @@ public class UserController {
             @ApiImplicitParam(name = "name", value = "用户名", required = true),
             @ApiImplicitParam(name = "pwd", value = "密码", required = true)}
     )
-    public JsonModel loginOp(HttpSession session, JsonModel jm, String vcode, String name, String pwd) {
+    public JsonModel loginOp(HttpSession session, String vcode, String name, String pwd) {
+        jm = new JsonModel();
         if (name == null || "".equals(name)) {
             jm.setCode(0);
             jm.setMsg("请输入用户名！");
@@ -148,10 +151,11 @@ public class UserController {
 
     @RequestMapping(value = "/getUser", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiOperation(value = "获取用户信息", notes = "User")
-    public JsonModel getUser(HttpSession session, JsonModel jm) {
+    public JsonModel getUser(HttpSession session) {
+        jm = new JsonModel();
         String name = (String) session.getAttribute("name");
         System.out.println(name);
-        if (name == null||name.equals("null")) {
+        if (name == null || name.equals("null")) {
             jm.setCode(0);
             jm.setMsg("您没有登录 请先登录!");
         } else {
