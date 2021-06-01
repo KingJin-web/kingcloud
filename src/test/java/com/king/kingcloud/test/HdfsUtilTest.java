@@ -26,4 +26,8 @@ public class HdfsUtilTest {
     public void query() {
         System.out.println(hdfsUtil.query("king","biz"));
     }
+    @Test
+    public void querya() {
+        System.out.println(" ");
+    }
 }

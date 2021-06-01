@@ -13,8 +13,10 @@ import java.util.List;
  */
 @Data
 public class HdfsFileStatus {
+    //文件是否存在
+    private boolean is;
     //文件路径
-    private Path path;
+    private String path;
     //是否为文件夹
     private Boolean isDirectory;
     private String name;
@@ -33,4 +35,12 @@ public class HdfsFileStatus {
 //    private String group;
 //    private String permission;
 //    private Boolean isSymlink;
+
+    public HdfsFileStatus() {
+        this.is = true;
+    }
+
+    public HdfsFileStatus(boolean is) {
+        this.is = is;
+    }
 }

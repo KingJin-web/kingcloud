@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <title>KingDrive</title>
 </head>
+<link rel="stylesheet" href="/res/layui/css/layui.css" media="all">
 <script type='text/javascript' src='../res/jquery-3.5.1.js'></script>
 <script type="text/javascript" src="Popup.js"></script>
+<script src="../res/layui/layui.js"></script>
 <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="../bootstrap/js/bootstrap.min.js"></script>
 <script src="../res/axios.js"></script>
 <script type="text/javascript" src="/res/vue.js"></script>
-<script src="../res/layui/layui.all.js"></script>
-<body onload="queryFile(' ')">
+
+<body onload="queryFile()">
 
 <div class="layui-layout layui-layout-admin" id="main">
     <div class="layui-header layui-bg-cyan" id="head">
@@ -25,14 +27,27 @@
                 <i class="layui-icon layui-icon-spread-left"></i>
             </li>
 
-            <li class="layui-nav-item layui-hide-xs"><a href="">全部文件</a></li>
-            <li class="layui-nav-item layui-hide-xs"><a href="">我的分享</a></li>
+            <li class="layui-nav-item">
+                新建<img style="width: 30px" src="/res/svg/新建.svg" alt="">
+                <dl class="layui-nav-child">
+                    <dd><a @click="newFile">新建文件</a></dd>
+                    <dd><a @click="newDir">新建文件夹</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item layui-hide-xs">
+                <a class="layui-icon" href="">上传</a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <button type="button" class="layui-btn" id="test3"><i class="layui-icon"></i>上传文件</button>
+                    </dd>
+                </dl>
+            </li>
             <li class="layui-nav-item layui-hide-xs"><a href="">回收站</a></li>
 
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide layui-show-md-inline-block">
-                <a href="javascript:;">
+
                     <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
                          class="layui-nav-img">
                     {{user.name}}
@@ -80,121 +95,171 @@
     <div id="bodyS" class="layui-body layui-bg-gray">
         <!-- 内容主体区域 -->
 
-        <div style="padding: 15px;width: 100%">
-            <div class="col-lg-6" style="width: 100%">
-                <div class="input-group">
-                    <input type="text" class="form-control"/>
-                    <span class="input-group-btn">
-						<button class="btn btn-default" type="button" onclick="queryFile(' ')">
-							Go!
-						</button>
-					</span>
-                </div><!-- /input-group -->
-            </div><!-- /.col-lg-6 -->
+        <div style="padding: 15px;width: 100%" class="layui-inline">
+
+            <div class="layui-input-inline" style="width: 800px;">
+                <input v-model="path" type="text" id="path" class="layui-input">
+            </div>
+
+            <div class="layui-input-inline" style="width: 100px;">
+                <button id="GO" type="button" class="layui-btn  layui-border-blue" @click="gotoPath">GO</button>
+            </div>
+
         </div>
         <div style="padding: 15px;width: 100%" id="fileTable">
 
             <table id="singers" lay-filter="demo" style="height: 52%">
                 <thead>
                 <tr>
-
                     <th lay-data="{field:'username', width:300}">文件名</th>
-
                     <th lay-data="{field:'experience', width:80, sort:true}">大小</th>
                     <th lay-data="{field:'sign' , sort:true}">修改日期</th>
                 </tr>
                 </thead>
                 <tbody>
+
                 </tbody>
             </table>
         </div>
         <div class="layui-footer">
             <!-- 底部固定区域 -->
+            <img src="/res/svg/文件夹.svg">
             底部固定区域
         </div>
     </div>
 </div>
+<!--<script src="../res/layui/layui.all.js"></script>-->
 <script type="text/javascript">
 
-    function queryFile(path) {
-        let files = [];
+    function FgetPath() {
+        window.setTimeout(function () {
+            console.log("你好啊！！！");
+            //$("#singers tr:nth-child(0)").nextAll().remove();
+            //$("#singers  tr:not(:first)").nextAll().remove();
+            location.reload();
+            queryFile()
+        }, 300);
+    }
 
+    function queryFile() {
+        const path = king.getPath();
+        let files = [];
+        console.log(path)
         axios.post('/getFile?path=' + path).then(res => {
             if (res.data.code === 1) {
                 files = res.data.obj;
-                console.log(files)
-                var $table = $("#singers");
+                //console.log(files)
+                //$("#singers  tr:not(:first)").nextAll().remove();
+                const $table = $("#singers");
                 //文件大小
-                var filesize = "";
-                var isDir = "";
-                //添加成员（members）、生日（birthday）字段和头像（head）字段的展示
+                let filesize = "";
+                let isDir = "";
+
                 for (const i of files) {
                     console.log(i.path)
-
+                    // var dirPath = i.path;
+                    if (i.is === false){
+                        console.log("路径错误")
+                    }
                     if (i.isDirectory === true) {
                         filesize = " ";
                         isDir = "<img style='height: 20px;width: 20px'  src='../res/svg/文件夹.png'>"
+                        i.name = "<a href='#" + i.path + "' name='name' onclick='FgetPath()' value='name'>" + i.name + "</a>"
                     } else {
                         filesize = i.fileSize + " kb";
                         isDir = "<img style='height: 20px;width: 20px' src='../res/svg/文件.png' alt=''>"
                     }
+
                     $table.append("<tr>" +
+
                         "<td>" + isDir + "&nbsp;&nbsp;&nbsp;&nbsp;" + i.name + "</td>" +
                         "<td>" + filesize + "</td>" +
                         "<td>" + i.modification_time + "</td>" +
                         "</tr>");
 
-                    var table = layui.table;
+                    // var table = layui.table;
 
                     //转换静态表格
-                    table.init('demo', {
+                    tableS.init('demo', {
                         height: 600 //设置高度
                         , limit: 10 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
                         , page: true //开启分页
+                        , curr: 12 //设定初始在第 12 页
+                        , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                            title: '提示'
+                            , layEvent: 'LAYTABLE_TIPS'
+                            , icon: 'layui-icon-tips'
+                        }]
                         //支持所有基础参数
                     });
                 }
             }
         });
-
-
     }
 
-    // const Table = new Vue({
-    //     el: '#fileTable',
-    //     data: {
-    //         files: [],
-    //         path: ''
-    //     },
-    //     mounted: function () {
-    //
-    //         var that =this;
-    //         axios.post('/getFile?path=' + this.path).then(res => {
-    //             if (res.data.code === 1) {
-    //                 that.files = res.data.obj;
-    //                 console.log(this.files)
-    //             }
-    //         });
-    //         var table = layui.table;
-    //
-    //         //转换静态表格
-    //         table.init('demo', {
-    //             height: 315 //设置高度
-    //             , limit: 10 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
-    //             //支持所有基础参数
-    //         });
-    //     }
-    // });
+    function GgQueryFile(path) {
+        let files = [];
+
+        axios.post('/getFile?path=' + path).then(res => {
+            if (res.data.code === 1) {
+                files = res.data.obj;
+                //console.log(files)
+                //$("#singers  tr:not(:first)").nextAll().remove();
+                const $table = $("#singers");
+                //文件大小
+                let filesize = "";
+                let isDir = "";
+
+                for (const i of files) {
+                    console.log(i.path)
+                    // var dirPath = i.path;
+
+
+                    if (i.isDirectory === true) {
+                        filesize = " ";
+                        isDir = "<img style='height: 20px;width: 20px'  src='../res/svg/文件夹.png'>"
+                        i.name = "<a href='#" + i.path + "' name='name' onclick='FgetPath()' value='name'>" + i.name + "</a>"
+                    } else {
+                        filesize = i.fileSize + " kb";
+                        isDir = "<img style='height: 20px;width: 20px' src='../res/svg/文件.png' alt=''>"
+                    }
+
+                    $table.append("<tr>" +
+
+                        "<td>" + isDir + "&nbsp;&nbsp;&nbsp;&nbsp;" + i.name + "</td>" +
+                        "<td>" + filesize + "</td>" +
+                        "<td>" + i.modification_time + "</td>" +
+                        "</tr>");
+
+                    // var table = layui.table;
+
+                    //转换静态表格
+                    tableS.init('demo', {
+                        height: 600 //设置高度
+                        , limit: 10 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
+                        , page: true //开启分页
+                        , curr: 12 //设定初始在第 12 页
+                        , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                            title: '提示'
+                            , layEvent: 'LAYTABLE_TIPS'
+                            , icon: 'layui-icon-tips'
+                        }]
+                        //支持所有基础参数
+                    });
+                }
+            }
+        });
+    }
 </script>
 <script type="text/javascript">
     const king = new Vue({
         el: '#main',
         data: {
             user: {}, //用户信息
-            // files: [],
-            // path: ""
+            path: '/', //路径信息
         },
         mounted: function () {
+
             axios.post('/getUser').then(res => {
                 if (res.data.code === 0) {
                     gotoLogin(res.data.msg, "/index.html");
@@ -202,15 +267,38 @@
                     this.user = res.data.obj;
                 }
             });
-            // axios.post('/getFile?path=' + this.path).then(res => {
-            //     if (res.data.code === 1) {
-            //         console.log( res.data.obj);
-            //         this.files = res.data.obj;
-            //         console.log( this.files);
-            //     }
-            // });
-            // tables.getFiles();
-            //  console.log(tables.files)
+
+        },
+        methods: {
+            //获取网页链接http://localhost:8080/user/index.html#/文件夹1/文件夹4/css/res/
+            //#号后面的数据 就是访问文件的路径
+            getPath: function () {
+                var test = window.location.hash;
+                test = decodeURI(test);
+                test = test.substring(1, test.length);
+                if (test === "/") {
+
+                }
+                this.path = test;
+                console.log(this.path)
+                return this.path;
+            },
+            gotoPath: function () {
+                window.location.href = "/user/index.html#" + this.path;
+                location.reload();
+            },
+            newFile : function () {
+
+            },
+            newDir : function (){
+                axios.post('/getUser').then(res => {
+                    if (res.data.code === 0) {
+                        gotoLogin(res.data.msg, "/index.html");
+                    } else {
+                        this.user = res.data.obj;
+                    }
+                });
+            }
         }
     });
 
@@ -222,13 +310,14 @@
 
 <script>
     //JS
-
-    layui.use(['element', 'layer', 'util'], function () {
+    var tableS
+    layui.use(['table', 'element', 'layer', 'util'], function () {
         var element = layui.element
             , layer = layui.layer
             , util = layui.util
             , $ = layui.$;
 
+        tableS = layui.table
         //头部事件
         util.event('lay-header-event', {
             //左侧菜单事件

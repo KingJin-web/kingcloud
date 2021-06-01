@@ -3,7 +3,6 @@
 document.write("<script type='text/javascript' src='../res/jquery-3.5.1.js'></script>");
 document.write("<script type='text/javascript' src='../res/layer/layer.js'></script>");
 document.write("<script type='text/javascript' src='../res/layui/layui.js'></script>");
-document.write("<script type='text/javascript' src='../res/vue.js'></script>");
 document.write('<link rel="stylesheet" href="../res/layui/css/layui.css"  media="all">');
 document.write('<script type="text/javascript" src="../res/layui/lay/modules/form.js"></script>')
 document.write('<link rel="icon" href="../images/favicon.ico" mce_href="../favicon.ico" type="image/x-icon">  ')

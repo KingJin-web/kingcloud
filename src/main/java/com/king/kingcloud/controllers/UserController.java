@@ -38,7 +38,6 @@ public class UserController {
     /**
      * 注册
      *
-     * @param jm
      * @param name
      * @param pwd1
      * @return
@@ -51,7 +50,7 @@ public class UserController {
             @ApiImplicitParam(name = "pwd2", value = "密码", required = true),
             @ApiImplicitParam(name = "email", value = "邮箱", required = false)}
     )
-    public JsonModel registerOp( String name, String pwd1, String pwd2, String email) {
+    public JsonModel registerOp(String name, String pwd1, String pwd2, String email) {
         jm = new JsonModel();
         if (name == null || "".equals(name)) {
             jm.setCode(0);
@@ -141,7 +140,8 @@ public class UserController {
             session.setAttribute("name", u.getName());
             jm.setCode(1);
             jm.setMsg("登陆成功");
-
+            //存用户数据到session中
+            session.setAttribute("user", userBiz.getUserByName(name));
         } else {
             jm.setCode(0);
             jm.setMsg("用户名或密码错误！");
@@ -153,14 +153,14 @@ public class UserController {
     @ApiOperation(value = "获取用户信息", notes = "User")
     public JsonModel getUser(HttpSession session) {
         jm = new JsonModel();
-        String name = (String) session.getAttribute("name");
-        System.out.println(name);
-        if (name == null || name.equals("null")) {
+        User user = (User) session.getAttribute("user");
+        //System.out.println(user);
+        if (user.getName() == null || user.getName().equals("null")) {
             jm.setCode(0);
             jm.setMsg("您没有登录 请先登录!");
         } else {
             jm.setCode(1);
-            jm.setObj(userBiz.getUserByName(name));
+            jm.setObj(user);
         }
 
         return jm;

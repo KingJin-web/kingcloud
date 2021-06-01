@@ -65,9 +65,28 @@ public class HdfsUtil {
         System.out.println(result);
     }
 
-    public List<HdfsFileStatus> query(String name, String pathS) {
+    public boolean mkdir(String name, String pathS) {
+        // 需要传递一个Path对象
         Path path;
-        if (pathS == null || pathS.equals("")) {
+        if (pathS == null || pathS.equals("") || pathS.endsWith("undefined")) {
+            path = new Path("/" + name);
+        } else {
+            path = new Path("/" + name + "/" + pathS);
+        }
+        boolean result = false;
+        try {
+            result = fileSystem.mkdirs(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public List<HdfsFileStatus> query(String name, String pathS) {
+        System.out.println(pathS);
+
+        Path path;
+        if (pathS == null || pathS.equals("") || pathS.endsWith("undefined")) {
             path = new Path("/" + name);
         } else {
             path = new Path("/" + name + "/" + pathS);
@@ -77,13 +96,11 @@ public class HdfsUtil {
         List<HdfsFileStatus> list = new ArrayList<>();
         try {
             fileStatuses = fileSystem.listStatus(path);
-
-
             for (FileStatus fileStatus : fileStatuses) {
                 HdfsFileStatus hfs = new HdfsFileStatus();
                 //获取文件名
-                hfs.setName(getFileName(fileStatus.getPath()));
-                hfs.setPath(fileStatus.getPath());
+                hfs.setName(fileStatus.getPath().getName());
+                hfs.setPath(getPathDeName(name, fileStatus.getPath()));
                 //获取文件是否为文件夹
                 hfs.setIsDirectory(fileStatus.isDirectory());
                 //文件上次修改时间
@@ -96,9 +113,21 @@ public class HdfsUtil {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            list.add(new HdfsFileStatus(false));
         }
-
         return list;
+    }
+
+    public void changeFileName(String oldNamePath,String newNamePath) {
+
+        Path oldPath = new Path("/king/a.txt");
+        Path newPath = new Path("/king/b.txt");
+        // 第一个参数是原文件的名称，第二个则是新的名称
+        try {
+            fileSystem.rename(oldPath, newPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -106,5 +135,19 @@ public class HdfsUtil {
         Assert.notNull(path, "");
         String file = String.valueOf(path);
         return file.substring(file.lastIndexOf("/") + 1);
+    }
+
+    /**
+     * 返回文件的路径
+     * String a = "hdfs://dn1:9000/king/文件夹/a";
+     *
+     * @param name king
+     * @param path hdfs://dn1:9000/king/文件夹/a
+     * @return /文件夹/a
+     */
+    public String getPathDeName(String name, Path path) {
+        System.out.println(path);
+        String paths = String.valueOf(path);
+        return paths.substring(paths.indexOf(name) + name.length());
     }
 }

@@ -9,6 +9,9 @@ spring:
       ddl-auto: update
     show-sql: true
     database: mysql
+    properties:
+      hibernate:
+        fromat-sql: true
 
 
 server:

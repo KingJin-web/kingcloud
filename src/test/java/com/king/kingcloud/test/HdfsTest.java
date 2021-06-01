@@ -54,10 +54,10 @@ public class HdfsTest {
     @Test
     public void mkdir() throws Exception {
         // 需要传递一个Path对象
-        boolean result = fileSystem.mkdirs(new Path("/king/中文"));
-        result = fileSystem.mkdirs(new Path("/king/文件夹4"));
-        result = fileSystem.mkdirs(new Path("/king/文件夹6"));
-        result = fileSystem.mkdirs(new Path("/king/文件夹5"));
+        boolean result = fileSystem.mkdirs(new Path("/king/test"));
+        result = fileSystem.mkdirs(new Path("/king/test/文件夹4"));
+        result = fileSystem.mkdirs(new Path("/king/test/文件夹6"));
+        result = fileSystem.mkdirs(new Path("/king/test/文件夹5"));
         System.out.println(result);
     }
     //hdfs://node1:9000/king/c91-s2-xm.sql
@@ -68,9 +68,9 @@ public class HdfsTest {
      */
     public void write(String s) throws Exception {
         // 创建文件
-        FSDataOutputStream outputStream = fileSystem.create(new Path("/king/" + s));
+        FSDataOutputStream outputStream = fileSystem.create(new Path("/king/test/" + s));
         // 写入一些内容到文件中
-        outputStream.write(("Hello Hadoop! Hello Java! Hello 世界!" + "Hello Hadoop! Hello Java! Hello 世界!" +"Hello Hadoop! Hello Java! Hello 世界!" +
+        outputStream.write((" 文件夹1 Hello Hadoop! Hello Java! Hello 世界!" + "Hello Hadoop! Hello Java! Hello 世界!" +"Hello Hadoop! Hello Java! Hello 世界!" +
                 "\nHello Hadoop! Hello Java! Hello 世界!").getBytes(StandardCharsets.UTF_8));
         outputStream.flush();
         outputStream.close();
@@ -199,5 +199,13 @@ public class HdfsTest {
         fileSystem = null;
 
         System.out.println("HDFSAPP.tearDown");
+    }
+
+    public static void main(String[] args) {
+        String a = "hdfs://dn1:9000/king/文件夹/a";
+        String b = "hdfs://dn1:9000/bob/文件夹/a";
+        int as = "king".length();
+        System.out.println(a.substring(a.indexOf("king") + as));;
+        System.out.println(a.length());
     }
 }
