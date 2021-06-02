@@ -66,7 +66,6 @@ public class HdfsUtil {
     }
 
     public boolean mkdir(String name, String pathS) {
-        // 需要传递一个Path对象
         Path path;
         if (pathS == null || pathS.equals("") || pathS.endsWith("undefined")) {
             path = new Path("/" + name);

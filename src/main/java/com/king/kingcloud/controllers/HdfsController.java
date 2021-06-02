@@ -75,7 +75,7 @@ public class HdfsController {
     public JsonModel newDir(HttpSession session, String dirPath) {
         jm = new JsonModel();
         String name = (String) session.getAttribute("name");
-
+        System.out.println(dirPath);
         if (hdfsUtil.mkdir(name, dirPath)) {
             jm.setCode(1);
             jm.setMsg("新建成功!");

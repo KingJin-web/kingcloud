@@ -27,7 +27,7 @@ logging:
     org.springframework: warn
   file:
     path: ./logs
-    name: yc_mybank.log
+    name: king.log
 
 swagger:
   enabled: true

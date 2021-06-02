@@ -48,9 +48,9 @@
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide layui-show-md-inline-block">
 
-                    <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
-                         class="layui-nav-img">
-                    {{user.name}}
+                <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
+                     class="layui-nav-img">
+                {{user.name}}
                 </a>
                 <dl class="layui-nav-child">
                     <dd><a href="">个人中心</a></dd>
@@ -105,10 +105,28 @@
                 <button id="GO" type="button" class="layui-btn  layui-border-blue" @click="gotoPath">GO</button>
             </div>
 
-        </div>
-        <div style="padding: 15px;width: 100%" id="fileTable">
 
-            <table id="singers" lay-filter="demo" style="height: 52%">
+        </div>
+        <!--        上一页下一页按钮-->
+        <div class="layui-btn-container layui-inline" style="padding: 5px;width: 100%">
+            <!--            下一页 &#xe65b;layui-icon-next-->
+            <!--            上一页&#xe65a;layui-icon-prev-->
+            <div class="layui-input-inline">
+                <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" @click="gotoPrev">
+                    <i class="layui-icon layui-icon-prev"></i>
+                    返回上一级
+                </button>
+            </div>
+            <div class="layui-input-inline">
+                <button type="button" class="layui-btn layui-btn-primary layui-border-blue" @click="gotoPrev">
+                    下一页
+                    <i class="layui-icon layui-icon-next"></i>
+                </button>
+            </div>
+        </div>
+        <div style="padding: 5px;width: 100%" id="fileTable">
+
+            <table id="singers" lay-filter="demo" style="height: 40%">
                 <thead>
                 <tr>
                     <th lay-data="{field:'username', width:300}">文件名</th>
@@ -123,7 +141,7 @@
         </div>
         <div class="layui-footer">
             <!-- 底部固定区域 -->
-            <img src="/res/svg/文件夹.svg">
+            <img style="width: 20px" src="/res/svg/文件夹.svg">
             底部固定区域
         </div>
     </div>
@@ -158,7 +176,7 @@
                 for (const i of files) {
                     console.log(i.path)
                     // var dirPath = i.path;
-                    if (i.is === false){
+                    if (i.is === false) {
                         console.log("路径错误")
                     }
                     if (i.isDirectory === true) {
@@ -184,7 +202,7 @@
                         height: 600 //设置高度
                         , limit: 10 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
                         , page: true //开启分页
-                        , curr: 12 //设定初始在第 12 页
+                        , curr: 10 //设定初始在第 12 页
                         , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
                             title: '提示'
                             , layEvent: 'LAYTABLE_TIPS'
@@ -197,59 +215,7 @@
         });
     }
 
-    function GgQueryFile(path) {
-        let files = [];
 
-        axios.post('/getFile?path=' + path).then(res => {
-            if (res.data.code === 1) {
-                files = res.data.obj;
-                //console.log(files)
-                //$("#singers  tr:not(:first)").nextAll().remove();
-                const $table = $("#singers");
-                //文件大小
-                let filesize = "";
-                let isDir = "";
-
-                for (const i of files) {
-                    console.log(i.path)
-                    // var dirPath = i.path;
-
-
-                    if (i.isDirectory === true) {
-                        filesize = " ";
-                        isDir = "<img style='height: 20px;width: 20px'  src='../res/svg/文件夹.png'>"
-                        i.name = "<a href='#" + i.path + "' name='name' onclick='FgetPath()' value='name'>" + i.name + "</a>"
-                    } else {
-                        filesize = i.fileSize + " kb";
-                        isDir = "<img style='height: 20px;width: 20px' src='../res/svg/文件.png' alt=''>"
-                    }
-
-                    $table.append("<tr>" +
-
-                        "<td>" + isDir + "&nbsp;&nbsp;&nbsp;&nbsp;" + i.name + "</td>" +
-                        "<td>" + filesize + "</td>" +
-                        "<td>" + i.modification_time + "</td>" +
-                        "</tr>");
-
-                    // var table = layui.table;
-
-                    //转换静态表格
-                    tableS.init('demo', {
-                        height: 600 //设置高度
-                        , limit: 10 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
-                        , page: true //开启分页
-                        , curr: 12 //设定初始在第 12 页
-                        , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
-                            title: '提示'
-                            , layEvent: 'LAYTABLE_TIPS'
-                            , icon: 'layui-icon-tips'
-                        }]
-                        //支持所有基础参数
-                    });
-                }
-            }
-        });
-    }
 </script>
 <script type="text/javascript">
     const king = new Vue({
@@ -273,12 +239,9 @@
             //获取网页链接http://localhost:8080/user/index.html#/文件夹1/文件夹4/css/res/
             //#号后面的数据 就是访问文件的路径
             getPath: function () {
-                var test = window.location.hash;
+                let test = window.location.hash;
                 test = decodeURI(test);
                 test = test.substring(1, test.length);
-                if (test === "/") {
-
-                }
                 this.path = test;
                 console.log(this.path)
                 return this.path;
@@ -287,17 +250,41 @@
                 window.location.href = "/user/index.html#" + this.path;
                 location.reload();
             },
-            newFile : function () {
+            gotoPath2: function (goPath) {
+                this.path = goPath;
+                window.location.href = "/user/index.html#" + this.path;
+                location.reload();
+            },
+            //返回上上一级
+            gotoPrev: function () {
+                var p = this.path;
+                p = p.substring(0, p.lastIndexOf("/"))
+                console.log(p)
+                this.gotoPath2(p);
+            },
+            newFile: function () {
 
             },
-            newDir : function (){
-                axios.post('/getUser').then(res => {
-                    if (res.data.code === 0) {
-                        gotoLogin(res.data.msg, "/index.html");
-                    } else {
-                        this.user = res.data.obj;
-                    }
+            //新建一个文件夹
+            newDir: function () {
+              this.pop1()
+            },
+            pop1: function () {
+                var that = this;
+                let input;
+                //默认prompt
+                layerS.prompt(function (val, index) {
+                    input = val;
+                    //layer.msg('得到了'+val);
+                    console.log(input)
+
+
+                    axios.post('/newDir?dirPath=' + that.path + "/" + input).then(res => {
+                    });
+                    layerS.close(index);
                 });
+                return input;
+
             }
         }
     });
@@ -311,12 +298,13 @@
 <script>
     //JS
     var tableS
+    var layerS
     layui.use(['table', 'element', 'layer', 'util'], function () {
         var element = layui.element
             , layer = layui.layer
             , util = layui.util
             , $ = layui.$;
-
+        layerS = layer;
         tableS = layui.table
         //头部事件
         util.event('lay-header-event', {
