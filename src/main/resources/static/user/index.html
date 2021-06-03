@@ -126,8 +126,9 @@
         </div>
         <div style="padding: 5px;width: 100%" id="fileTable">
 
-            <table id="singers" lay-data="{initSort : {field:'size', type:'asc'}}" lay-filter="demo" style="height: 40%">
-                <thead  >
+            <table id="singers" lay-data="{initSort : {field:'size', type:'asc'}}" lay-filter="demo"
+                   style="height: 40%">
+                <thead>
                 <tr>
                     <th lay-data="{field:'fileName', width:300}">文件名</th>
                     <th lay-data="{field:'size', width:80, sort:true}">大小</th>
@@ -200,14 +201,14 @@
                     //转换静态表格
                     tableS.init('demo', {
                         height: 600 //设置高度
-                        , limit: 20 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
+                        , limit: files.length //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
                         , page: true //开启分页
                         //, curr: 10 //设定初始在第 12 页
                         //支持所有基础参数
                     });
 
                     //触发行单击事件
-                    tableS.on('row(test)', function (obj) {
+                    tableS.on('row(demo)', function (obj) {
                         console.log(obj.tr) //得到当前行元素对象
                         console.log(obj.data) //得到当前行数据
                         //obj.del(); //删除当前行
@@ -289,6 +290,10 @@
                     });
                     layerS.close(index);
                 });
+            },
+            //修改文件名
+            changeName: function () {
+
             }
         }
     });
