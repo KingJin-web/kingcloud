@@ -126,12 +126,12 @@
         </div>
         <div style="padding: 5px;width: 100%" id="fileTable">
 
-            <table id="singers" lay-filter="demo" style="height: 40%">
-                <thead>
+            <table id="singers" lay-data="{initSort : {field:'size', type:'asc'}}" lay-filter="demo" style="height: 40%">
+                <thead  >
                 <tr>
-                    <th lay-data="{field:'username', width:300}">文件名</th>
-                    <th lay-data="{field:'experience', width:80, sort:true}">大小</th>
-                    <th lay-data="{field:'sign' , sort:true}">修改日期</th>
+                    <th lay-data="{field:'fileName', width:300}">文件名</th>
+                    <th lay-data="{field:'size', width:80, sort:true}">大小</th>
+                    <th lay-data="{field:'date' , sort:true}">修改日期</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -200,15 +200,18 @@
                     //转换静态表格
                     tableS.init('demo', {
                         height: 600 //设置高度
-                        , limit: 10 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
+                        , limit: 20 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
                         , page: true //开启分页
-                        , curr: 10 //设定初始在第 12 页
-                        , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
-                            title: '提示'
-                            , layEvent: 'LAYTABLE_TIPS'
-                            , icon: 'layui-icon-tips'
-                        }]
+                        //, curr: 10 //设定初始在第 12 页
                         //支持所有基础参数
+                    });
+
+                    //触发行单击事件
+                    tableS.on('row(test)', function (obj) {
+                        console.log(obj.tr) //得到当前行元素对象
+                        console.log(obj.data) //得到当前行数据
+                        //obj.del(); //删除当前行
+                        //obj.update(fields) //修改当前行数据
                     });
                 }
             }
@@ -250,6 +253,7 @@
                 window.location.href = "/user/index.html#" + this.path;
                 location.reload();
             },
+            //去指定路径
             gotoPath2: function (goPath) {
                 this.path = goPath;
                 window.location.href = "/user/index.html#" + this.path;
@@ -267,24 +271,24 @@
             },
             //新建一个文件夹
             newDir: function () {
-              this.pop1()
+                this.pop1()
             },
             pop1: function () {
-                var that = this;
-                let input;
-                //默认prompt
-                layerS.prompt(function (val, index) {
-                    input = val;
-                    //layer.msg('得到了'+val);
-                    console.log(input)
-
-
-                    axios.post('/newDir?dirPath=' + that.path + "/" + input).then(res => {
+                const that = this;
+                let data;
+                layerS.prompt({
+                    formType: 0,
+                    value: '',//初始值
+                    title: '请输入新建的文件名'
+                }, function (value, index, elem) {
+                    //alert(value); //得到value
+                    axios.post('/newDir?dirPath=' + that.path + "/" + value).then(res => {
+                        data = res.data;
+                        layerS.msg(data.msg);
+                        location.reload();
                     });
                     layerS.close(index);
                 });
-                return input;
-
             }
         }
     });

@@ -87,13 +87,39 @@ public class HdfsController {
         return jm;
     }
 
+
     @RequestMapping(value = "/newFile", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiOperation(value = "新建文件", notes = "新建")
     @ApiImplicitParam(name = "FilePath", value = " FilePath", required = true)
     public JsonModel newFile(HttpSession session, String FilePath) {
         jm = new JsonModel();
 
+        return jm;
+    }
 
+    @RequestMapping(value = "/changeFileName", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation(value = "重命名文件", notes = "重命名")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "path", value = "path", required = false),
+            @ApiImplicitParam(name = "oldName", value = "oldName", required = true),
+            @ApiImplicitParam(name = "newName", value = "newName", required = true)
+    })
+    public JsonModel changeFileName(HttpSession session, String path, String oldName, String newName) {
+        jm = new JsonModel();
+        if (path == null || oldName == null || newName == null) {
+            jm.setCode(0);
+            jm.setMsg("WORRY");
+        }
+        String name = (String) session.getAttribute("name");
+        System.out.println(name + " " + path + " " + oldName + " " + newName);
+        if (hdfsUtil.changeFileName(name, path, oldName, newName)) {
+            ;
+            jm.setCode(1);
+            jm.setMsg("修改成功!");
+        } else {
+            jm.setCode(0);
+            jm.setMsg("修改失败!");
+        }
         return jm;
     }
 }

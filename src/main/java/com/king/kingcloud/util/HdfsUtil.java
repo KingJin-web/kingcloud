@@ -54,6 +54,12 @@ public class HdfsUtil {
         this.HDFS_PATH = HDFS_PATH;
     }
 
+    /**
+     * 新建文件夹
+     * 根目录下新建文件夹  用户目录
+     *
+     * @param fileName
+     */
     public void mkdir(String fileName) {
         // 需要传递一个Path对象
         boolean result = false;
@@ -65,6 +71,15 @@ public class HdfsUtil {
         System.out.println(result);
     }
 
+
+    /**
+     * 新建文件夹
+     * 新建用户目录下的文件夹
+     *
+     * @param name
+     * @param pathS
+     * @return
+     */
     public boolean mkdir(String name, String pathS) {
         Path path;
         if (pathS == null || pathS.equals("") || pathS.endsWith("undefined")) {
@@ -81,9 +96,50 @@ public class HdfsUtil {
         return result;
     }
 
-    public List<HdfsFileStatus> query(String name, String pathS) {
-        System.out.println(pathS);
+    public boolean changeName() {
 
+
+        return true;
+    }
+
+    public boolean changeFileName(String uname, String path, String oldName, String newName) {
+
+        Path oldPath = new Path("/" + uname + "/" + path + "/" + oldName);
+        Path newPath = new Path("/" + uname + "/" + path + "/" + newName);
+        System.out.println(oldPath);
+        System.out.println(newPath);
+        // 第一个参数是原文件的名称，第二个则是新的名称
+        try {
+            fileSystem.rename(oldPath, newPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param windowPath
+     * @param fatherpath
+     * @param sonpath
+     */
+    public Boolean upload(String windowPath, String fatherpath, String sonpath) {
+        boolean flag = true;
+        try {
+            fileSystem.copyFromLocalFile(new Path(windowPath), new Path("/" + fatherpath + "/" + sonpath));
+            System.out.println("上传成功");
+            return flag;
+        } catch (IOException e) {
+            flag = false;
+            e.printStackTrace();
+            System.out.println("上传失败 原因：" + e.getMessage());
+            return flag;
+        }
+    }
+
+    public List<HdfsFileStatus> query(String name, String pathS) {
         Path path;
         if (pathS == null || pathS.equals("") || pathS.endsWith("undefined")) {
             path = new Path("/" + name);
@@ -117,17 +173,22 @@ public class HdfsUtil {
         return list;
     }
 
-    public void changeFileName(String oldNamePath,String newNamePath) {
 
-        Path oldPath = new Path("/king/a.txt");
-        Path newPath = new Path("/king/b.txt");
-        // 第一个参数是原文件的名称，第二个则是新的名称
+    public boolean delete(String name, String dlPath) {
+        Path path;
+        if (dlPath == null || dlPath.equals("") || dlPath.endsWith("undefined")) {
+            return false;
+        } else {
+            path = new Path("/" + name + "/" + dlPath);
+        }
+        // 第二个参数指定是否要递归删除，false=否，true=是
         try {
-            fileSystem.rename(oldPath, newPath);
+            fileSystem.delete(path, false);
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
-
+        return true;
     }
 
     public String getFileName(Path path) {
@@ -145,7 +206,6 @@ public class HdfsUtil {
      * @return /文件夹/a
      */
     public String getPathDeName(String name, Path path) {
-        System.out.println(path);
         String paths = String.valueOf(path);
         return paths.substring(paths.indexOf(name) + name.length());
     }

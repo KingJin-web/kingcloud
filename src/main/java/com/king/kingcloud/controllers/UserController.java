@@ -51,7 +51,10 @@ public class UserController {
             @ApiImplicitParam(name = "email", value = "邮箱", required = false)}
     )
     public JsonModel registerOp(String name, String pwd1, String pwd2, String email) {
+        //System.out.println(pwd1 + " " + pwd2);
+        //
         jm = new JsonModel();
+
         if (name == null || "".equals(name)) {
             jm.setCode(0);
             jm.setMsg("请输入用户名！");
@@ -62,7 +65,7 @@ public class UserController {
             jm.setMsg("请输入密码！");
             return jm;
         }
-        System.out.println(pwd1 + " " + pwd2);
+
         if (!pwd1.equals(pwd2)) {
             jm.setCode(0);
             jm.setMsg("两次密码不一致请重新输入！");
@@ -73,14 +76,14 @@ public class UserController {
             jm.setCode(1);
             jm.setMsg("注册成功！");
             hdfsUtil.mkdir(name);
-            return jm;
+
         } else {
             jm.setCode(0);
             jm.setMsg("用户名已被使用！");
-            return jm;
+
         }
 
-
+        return jm;
     }
 
     /**
@@ -154,8 +157,8 @@ public class UserController {
     public JsonModel getUser(HttpSession session) {
         jm = new JsonModel();
         User user = (User) session.getAttribute("user");
-        //System.out.println(user);
-        if (user.getName() == null || user.getName().equals("null")) {
+        System.out.println(user);
+        if (user == null ||user.getName() == null || user.getName().equals("null")) {
             jm.setCode(0);
             jm.setMsg("您没有登录 请先登录!");
         } else {
