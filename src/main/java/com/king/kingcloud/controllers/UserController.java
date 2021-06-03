@@ -144,6 +144,7 @@ public class UserController {
             jm.setCode(1);
             jm.setMsg("登陆成功");
             //存用户数据到session中
+            session.removeAttribute("validateCode");
             session.setAttribute("user", userBiz.getUserByName(name));
         } else {
             jm.setCode(0);
@@ -157,8 +158,19 @@ public class UserController {
     public JsonModel getUser(HttpSession session) {
         jm = new JsonModel();
         User user = (User) session.getAttribute("user");
-        System.out.println(user);
-        if (user == null ||user.getName() == null || user.getName().equals("null")) {
+
+        System.out.println();
+        if (user == null) {
+
+            String name = (String) session.getAttribute("name");
+            if (name != null) {
+                user = userBiz.getUserByName(name);
+                session.setAttribute("user", user);
+                jm.setCode(1);
+                jm.setObj(user);
+                return jm;
+            }
+
             jm.setCode(0);
             jm.setMsg("您没有登录 请先登录!");
         } else {

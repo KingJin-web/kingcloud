@@ -107,24 +107,18 @@
 
 
         </div>
-        <!--        上一页下一页按钮-->
-        <div class="layui-btn-container layui-inline" style="padding: 5px;width: 100%">
-            <!--            下一页 &#xe65b;layui-icon-next-->
-            <!--            上一页&#xe65a;layui-icon-prev-->
-            <div class="layui-input-inline">
-                <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" @click="gotoPrev">
-                    <i class="layui-icon layui-icon-prev"></i>
-                    返回上一级
-                </button>
-            </div>
-            <div class="layui-input-inline">
-                <button type="button" class="layui-btn layui-btn-primary layui-border-blue" @click="gotoPrev">
-                    下一页
-                    <i class="layui-icon layui-icon-next"></i>
-                </button>
-            </div>
-        </div>
-        <div style="padding: 5px;width: 100%" id="fileTable">
+        <!--        &lt;!&ndash;        上一页下一页按钮&ndash;&gt;-->
+        <!--        <div class="layui-btn-container layui-inline" style="padding: 5px;width: 100%">-->
+        <!--            &lt;!&ndash;            下一页 &#xe65b;layui-icon-next&ndash;&gt;-->
+        <!--            &lt;!&ndash;            上一页&#xe65a;layui-icon-prev&ndash;&gt;-->
+        <!--            <div class="layui-input-inline">-->
+        <!--                <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" @click="gotoPrev">-->
+        <!--                    <i class="layui-icon layui-icon-prev"></i>-->
+        <!--                    返回上一级-->
+        <!--                </button>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <div style="width: 100%" id="fileTable">
 
             <table id="singers" lay-data="{initSort : {field:'size', type:'asc'}}" lay-filter="demo"
                    style="height: 40%">
@@ -133,6 +127,7 @@
                     <th lay-data="{field:'fileName', width:300}">文件名</th>
                     <th lay-data="{field:'size', width:80, sort:true}">大小</th>
                     <th lay-data="{field:'date' , sort:true}">修改日期</th>
+                    <th lay-data="{fixed: 'right',title:'操作',  width:200, align:'center', toolbar: '#barDemo'}"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -147,8 +142,11 @@
         </div>
     </div>
 </div>
-<!--<script src="../res/layui/layui.all.js"></script>-->
+
 <script type="text/javascript">
+    function gotoPre() {
+        king.gotoPrev();
+    }
 
     function FgetPath() {
         window.setTimeout(function () {
@@ -183,10 +181,10 @@
                     if (i.isDirectory === true) {
                         filesize = " ";
                         isDir = "<img style='height: 20px;width: 20px'  src='../res/svg/文件夹.png'>"
-                        i.name = "<a href='#" + i.path + "' name='name' onclick='FgetPath()' value='name'>" + i.name + "</a>"
+                        i.name = "<a  name='name' onclick='FgetPath()' value='name' href='#" + i.path + "'>" + i.name + "</a>"
                     } else {
                         filesize = i.fileSize + " kb";
-                        isDir = "<img style='height: 20px;width: 20px' src='../res/svg/文件.png' alt=''>"
+                        isDir = "<img style='height: 20px;width: 20px' src='../res/svg/文件.png' alt='#" + i.path + "'>"
                     }
 
                     $table.append("<tr>" +
@@ -203,17 +201,60 @@
                         height: 600 //设置高度
                         , limit: files.length //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
                         , page: true //开启分页
+                        , toolbar: '#toolbarDemo'
                         //, curr: 10 //设定初始在第 12 页
                         //支持所有基础参数
                     });
+                    //工具条事件
+                    tableS.on('tool(demo)', function (obj) {
+                        //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+                        var data = obj.data;
+                        //获得当前行数据
+                        var layEvent = obj.event;
+                        //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                        var tr = obj.tr;
+                        //获得当前行 tr 的 DOM 对象（如果有的话）
 
-                    //触发行单击事件
-                    tableS.on('row(demo)', function (obj) {
-                        console.log(obj.tr) //得到当前行元素对象
-                        console.log(obj.data) //得到当前行数据
-                        //obj.del(); //删除当前行
-                        //obj.update(fields) //修改当前行数据
+                        console.log(layEvent)
+                        var path = data.fileName;
+                        path = path.substring(path.lastIndexOf("#") + 1, path.lastIndexOf('"'))
+                        console.log(path)
+
+
+                        let data1;
+                        if (layEvent === 'detail') { //查看
+                            //do somehing
+                        } else if (layEvent === 'del') { //删除
+                            layer.confirm('真的删除这个文件吗', function (index) {
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                layer.close(index);
+                                axios.post('/delFile?path=' + path).then(res => {
+                                    data1 = res.data;
+                                    layerS.msg(data1.msg);
+                                });
+                                //向服务端发送删除指令
+                            });
+                        } else if (layEvent === 'edit') { //编辑
+                            //do something
+
+                            //同步更新缓存对应的值
+                            obj.update({
+                                username: '123'
+                                , title: 'xxx'
+                            });
+                        } else if (layEvent === 'LAYTABLE_TIPS') {
+                            layer.alert('Hi，头部工具栏扩展的右侧图标。');
+                        }
                     });
+                    //
+                    // //触发行单击事件
+                    // tableS.on('row(demo)', function (obj) {
+                    //     console.log(obj.tr) //得到当前行元素对象
+                    //     console.log(obj.data) //得到当前行数据
+                    //
+                    //     //obj.del(); //删除当前行
+                    //     //obj.update(fields) //修改当前行数据
+                    // });
                 }
             }
         });
@@ -299,10 +340,9 @@
     });
 
 </script>
+<script type="text/javascript">
 
-
-<!--表格渲染-->
-
+</script>
 
 <script>
     //JS
@@ -335,5 +375,25 @@
 
     });
 </script>
+
+
 </body>
+<!--表格工具-->
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button type="button" class="layui-btn layui-btn-radius layui-btn-sm layui-btn-normal" onclick="gotoPre()">
+            <i class="layui-icon layui-icon-prev"></i>
+            返回上一级
+        </button>
+    </div>
+</script>
+<script type="text/html" id="barDemo">
+    <a title="我是鼠标悬停展示的内容" class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    <button title="重命名" class="layui-btn layui-btn-xs" lay-event="edit">&nbsp;
+        <i class="layui-icon layui-icon-edit"></i>&nbsp;
+    </button>
+    <button title="删除" class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">&nbsp;
+        <i class="layui-icon layui-icon-delete"></i>&nbsp;
+    </button>
+</script>
 </html>

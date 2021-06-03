@@ -122,4 +122,20 @@ public class HdfsController {
         }
         return jm;
     }
+    @RequestMapping(value = "/delFile", method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation(value = "删除文件", notes = "删除")
+    @ApiImplicitParam(name = "path", value = " path", required = true)
+    public JsonModel delFile(HttpSession session,String path){
+        jm = new JsonModel();
+        String name = (String) session.getAttribute("name");
+        if (hdfsUtil.delete(name,path)){
+            jm.setCode(1);
+            jm.setMsg("修改成功!");
+        }else {
+            jm.setCode(0);
+            jm.setMsg("修改失败!");
+        }
+
+        return jm;
+    }
 }

@@ -176,14 +176,14 @@ public class HdfsUtil {
 
     public boolean delete(String name, String dlPath) {
         Path path;
-        if (dlPath == null || dlPath.equals("") || dlPath.endsWith("undefined")) {
+        if (name == null || dlPath == null || dlPath.equals("") || dlPath.endsWith("undefined")) {
             return false;
         } else {
             path = new Path("/" + name + "/" + dlPath);
         }
         // 第二个参数指定是否要递归删除，false=否，true=是
         try {
-            fileSystem.delete(path, false);
+            fileSystem.delete(path, true);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
