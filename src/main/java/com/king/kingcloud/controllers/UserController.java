@@ -2,6 +2,7 @@ package com.king.kingcloud.controllers;
 
 import com.king.kingcloud.bean.User;
 import com.king.kingcloud.biz.UserBizImpl;
+import com.king.kingcloud.util.EmptyUtil;
 import com.king.kingcloud.util.HdfsUtil;
 import com.king.kingcloud.vo.JsonModel;
 import io.swagger.annotations.Api;
@@ -55,12 +56,12 @@ public class UserController {
         //
         jm = new JsonModel();
 
-        if (name == null || "".equals(name)) {
+        if (EmptyUtil.isEmpty(name)) {
             jm.setCode(0);
             jm.setMsg("请输入用户名！");
             return jm;
         }
-        if (pwd1 == null || "".equals(pwd1)) {
+        if (EmptyUtil.isEmpty(pwd1)) {
             jm.setCode(0);
             jm.setMsg("请输入密码！");
             return jm;
@@ -103,17 +104,17 @@ public class UserController {
     )
     public JsonModel loginOp(HttpSession session, String vcode, String name, String pwd) {
         jm = new JsonModel();
-        if (name == null || "".equals(name)) {
+        if (EmptyUtil.isEmpty(name)) {
             jm.setCode(0);
             jm.setMsg("请输入用户名！");
             return jm;
         }
-        if (pwd == null || "".equals(pwd)) {
+        if (EmptyUtil.isEmpty(pwd)) {
             jm.setCode(0);
             jm.setMsg("请输入密码！");
             return jm;
         }
-        if (vcode == null || "".equals(vcode)) {
+        if (EmptyUtil.isEmpty(vcode)) {
             jm.setCode(0);
             jm.setMsg("验证码不能为空!");
             return jm;
@@ -160,10 +161,10 @@ public class UserController {
         User user = (User) session.getAttribute("user");
 
         System.out.println();
-        if (user == null) {
+        if (EmptyUtil.isEmpty(user)) {
 
             String name = (String) session.getAttribute("name");
-            if (name != null) {
+            if (!EmptyUtil.isEmpty(name)) {
                 user = userBiz.getUserByName(name);
                 session.setAttribute("user", user);
                 jm.setCode(1);

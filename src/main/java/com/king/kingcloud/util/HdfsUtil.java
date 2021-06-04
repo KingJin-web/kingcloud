@@ -121,21 +121,21 @@ public class HdfsUtil {
     /**
      * 上传文件
      *
-     * @param windowPath
-     * @param fatherpath
-     * @param sonpath
+     * @param path
+     * @param name
+     * @param uploadPath
+     * @return
      */
-    public Boolean upload(String windowPath, String fatherpath, String sonpath) {
-        boolean flag = true;
+    public boolean upload(Path path, String name, String uploadPath) {
+        Path path1 = new Path("/" + name + "/" + uploadPath);
         try {
-            fileSystem.copyFromLocalFile(new Path(windowPath), new Path("/" + fatherpath + "/" + sonpath));
-            System.out.println("上传成功");
-            return flag;
+            fileSystem.copyFromLocalFile(path,path1);
+            System.out.println(path.toUri());
+            System.out.println(path1.toUri());
+            return true;
         } catch (IOException e) {
-            flag = false;
             e.printStackTrace();
-            System.out.println("上传失败 原因：" + e.getMessage());
-            return flag;
+            return false;
         }
     }
 

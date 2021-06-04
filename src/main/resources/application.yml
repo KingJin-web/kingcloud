@@ -16,8 +16,8 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
-
-
+  thymeleaf:
+    cache: false
 
 server:
   port: 8080
@@ -36,3 +36,7 @@ logging:
 
 swagger:
   enabled: true
+
+# 文件上传暂存路径
+file:
+  UploadPath: F:/test/

@@ -8,9 +8,9 @@
 <script type='text/javascript' src='../res/jquery-3.5.1.js'></script>
 <script type="text/javascript" src="Popup.js"></script>
 <script src="../res/layui/layui.js"></script>
-<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-<script src="../bootstrap/js/bootstrap.min.js"></script>
+<!--<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">-->
+<!--&lt;!&ndash; 最新的 Bootstrap 核心 JavaScript 文件 &ndash;&gt;-->
+<!--<script src="../bootstrap/js/bootstrap.min.js"></script>-->
 <script src="../res/axios.js"></script>
 <script type="text/javascript" src="/res/vue.js"></script>
 
@@ -35,10 +35,13 @@
                 </dl>
             </li>
             <li class="layui-nav-item layui-hide-xs">
-                <a class="layui-icon" href="">上传</a>
+                上传
                 <dl class="layui-nav-child">
                     <dd>
-                        <button type="button" class="layui-btn" id="test3"><i class="layui-icon"></i>上传文件</button>
+
+                    </dd>
+                    <dd>
+                        <input type="file" class="layui-btn" name="upload-file" id="upload-file" @change="uploadFile">
                     </dd>
                 </dl>
             </li>
@@ -258,9 +261,9 @@
                 }
             }
         });
+
+
     }
-
-
 </script>
 <script type="text/javascript">
     const king = new Vue({
@@ -335,8 +338,29 @@
             //修改文件名
             changeName: function () {
 
-            }
+            },
+            //文件上传
+            uploadFile: function (e) {
+                var file = e.target.files[0];
+                var formdata = new FormData()
+                formdata.append("file", file)
+                formdata.append("uploadPath",this.path)
+                console.log("文件", formdata);
+                axios.post(
+                    '/file/upload',
+                    formdata,
+                    {headers: {'Content-Type': 'multipart/form-data'}}
+                ).then(function (res) {
+                    if (res.data.code === 0) {
+                        layerS.msg(res.data.msg)
+                    } else {
+                        layerS.msg(res.data.msg, {icon: 1});
+                    }
+                })
+            },
+
         }
+
     });
 
 </script>
@@ -346,15 +370,19 @@
 
 <script>
     //JS
-    var tableS
-    var layerS
-    layui.use(['table', 'element', 'layer', 'util'], function () {
-        var element = layui.element
+    let tableS;
+    let layerS;
+    let uploadS;
+    let elementS;
+    layui.use(['table', 'element', 'layer', 'util', 'upload'], function () {
+        const element = layui.element
             , layer = layui.layer
             , util = layui.util
             , $ = layui.$;
         layerS = layer;
-        tableS = layui.table
+        tableS = layui.table;
+        uploadS = layui.upload;
+        elementS = layui.element;
         //头部事件
         util.event('lay-header-event', {
             //左侧菜单事件
@@ -385,6 +413,12 @@
             <i class="layui-icon layui-icon-prev"></i>
             返回上一级
         </button>
+    </div>
+
+    <div style="width: 95px;">
+        <div class="layui-progress layui-progress-big" lay-showpercent="yes" lay-filter="demo">
+            <div class="layui-progress-bar" lay-percent=""></div>
+        </div>
     </div>
 </script>
 <script type="text/html" id="barDemo">
