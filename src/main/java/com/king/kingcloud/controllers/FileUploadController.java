@@ -2,7 +2,12 @@ package com.king.kingcloud.controllers;
 
 import com.king.kingcloud.util.FileUtil;
 import com.king.kingcloud.util.HdfsUtil;
+import com.king.kingcloud.util.RedisUtil;
 import com.king.kingcloud.vo.JsonModel;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.hadoop.fs.Path;
 import org.codehaus.jettison.json.JSONString;
 import org.mortbay.util.ajax.JSON;
@@ -29,6 +34,7 @@ import java.util.Arrays;
  */
 @RestController
 @RequestMapping("/file")
+@Api(value = "文件上传接口", tags = {"文件操作接口"})
 public class FileUploadController {
 
     @Value(value = "${file.UploadPath}")
@@ -36,6 +42,8 @@ public class FileUploadController {
     @Autowired
     private HdfsUtil hdfsUtil;
 
+    @Autowired
+    private RedisUtil redisUtil;
     private JsonModel jm;
 
 
@@ -50,6 +58,7 @@ public class FileUploadController {
      * 实现文件上传
      */
     @RequestMapping(value = "/uploads", method = RequestMethod.POST)
+
     @ResponseBody
     public String fileUpload(@RequestParam("fileName") MultipartFile file) {
         if (file.isEmpty()) {
@@ -81,6 +90,9 @@ public class FileUploadController {
      */
     @CrossOrigin
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @ApiOperation(value = "上传文件到hdfs", notes = "上传")
+//    @ApiImplicitParams( {@ApiImplicitParam(name = "file", value = "file", required = true),
+//            @ApiImplicitParam(name = "uploadPath", value = "uploadPath", required = true)})
     public JsonModel file(@RequestParam("file") MultipartFile file, String uploadPath) {
         jm = new JsonModel();
         if (file.isEmpty()) {
@@ -88,7 +100,8 @@ public class FileUploadController {
             jm.setMsg("文件为空");
             return jm;
         }
-        String name = (String) session.getAttribute("name");
+       // String name = (String) session.getAttribute("name");
+        String name = redisUtil.getValue(session.getId(),"name");
         File path = new File(UploadPath + file.getOriginalFilename());
         try {
             file.transferTo(path);

@@ -135,10 +135,10 @@ public class HdfsController {
         String name = redisUtil.getValue(session.getId(),"name");
         if (hdfsUtil.delete(name,path)){
             jm.setCode(1);
-            jm.setMsg("修改成功!");
+            jm.setMsg("删除成功!");
         }else {
             jm.setCode(0);
-            jm.setMsg("修改失败!");
+            jm.setMsg("删除失败!");
         }
 
         return jm;
