@@ -18,6 +18,19 @@ spring:
       max-request-size: 50MB
   thymeleaf:
     cache: false
+  redis:
+    host: www.wuzhaoqi.top
+    port: 6379
+    database: 1
+    password: kingRedis
+    timeout: 5000ms
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        min-idle: 0
+        max-idle: 8
+
 
 server:
   port: 8080
@@ -40,3 +53,4 @@ swagger:
 # 文件上传暂存路径
 file:
   UploadPath: F:/test/
+

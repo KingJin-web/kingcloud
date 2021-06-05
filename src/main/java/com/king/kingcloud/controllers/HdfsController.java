@@ -2,6 +2,7 @@ package com.king.kingcloud.controllers;
 
 import com.king.kingcloud.bean.HdfsFileStatus;
 import com.king.kingcloud.util.HdfsUtil;
+import com.king.kingcloud.util.RedisUtil;
 import com.king.kingcloud.vo.JsonModel;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -27,6 +28,8 @@ public class HdfsController {
     @Autowired
     private HdfsUtil hdfsUtil;
 
+    @Autowired
+    private RedisUtil redisUtil;
     private JsonModel jm;
 
     /**
@@ -41,8 +44,8 @@ public class HdfsController {
     @ApiImplicitParam(name = "path", value = "目录", required = false)
     public JsonModel gstAllFile(HttpSession session, String path) {
         jm = new JsonModel();
-        String name = (String) session.getAttribute("name");
-
+        //String name = (String) session.getAttribute("name");
+        String name = redisUtil.getValue(session.getId(),"name");
         if (name == null || name.equals("null")) {
             jm.setCode(0);
             jm.setMsg("您没有登录 请先登录!");
@@ -74,7 +77,8 @@ public class HdfsController {
     @ApiImplicitParam(name = "dirPath", value = "dirPath", required = true)
     public JsonModel newDir(HttpSession session, String dirPath) {
         jm = new JsonModel();
-        String name = (String) session.getAttribute("name");
+        //String name = (String) session.getAttribute("name");
+        String name = redisUtil.getValue(session.getId(),"name");
         System.out.println(dirPath);
         if (hdfsUtil.mkdir(name, dirPath)) {
             jm.setCode(1);
@@ -110,10 +114,10 @@ public class HdfsController {
             jm.setCode(0);
             jm.setMsg("WORRY");
         }
-        String name = (String) session.getAttribute("name");
+        //String name = (String) session.getAttribute("name");
+        String name = redisUtil.getValue(session.getId(),"name");
         System.out.println(name + " " + path + " " + oldName + " " + newName);
         if (hdfsUtil.changeFileName(name, path, oldName, newName)) {
-            ;
             jm.setCode(1);
             jm.setMsg("修改成功!");
         } else {
@@ -127,7 +131,8 @@ public class HdfsController {
     @ApiImplicitParam(name = "path", value = " path", required = true)
     public JsonModel delFile(HttpSession session,String path){
         jm = new JsonModel();
-        String name = (String) session.getAttribute("name");
+       // String name = (String) session.getAttribute("name");
+        String name = redisUtil.getValue(session.getId(),"name");
         if (hdfsUtil.delete(name,path)){
             jm.setCode(1);
             jm.setMsg("修改成功!");

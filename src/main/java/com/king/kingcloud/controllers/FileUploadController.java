@@ -38,6 +38,7 @@ public class FileUploadController {
 
     private JsonModel jm;
 
+
     @Autowired
     HttpSession session;
 
@@ -112,6 +113,7 @@ public class FileUploadController {
      */
     @RequestMapping(value = "/uploadDir", method = RequestMethod.POST)
     public String uploadFolder(MultipartFile[] files) {
+        session.getId();
         System.out.println(Arrays.toString(files));
         if (FileUtil.saveMultiFile(UploadPath, files)) {
             return "ok";

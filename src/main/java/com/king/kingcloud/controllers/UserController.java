@@ -4,6 +4,7 @@ import com.king.kingcloud.bean.User;
 import com.king.kingcloud.biz.UserBizImpl;
 import com.king.kingcloud.util.EmptyUtil;
 import com.king.kingcloud.util.HdfsUtil;
+import com.king.kingcloud.util.RedisUtil;
 import com.king.kingcloud.vo.JsonModel;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * @program: kingcloud
@@ -34,6 +36,8 @@ public class UserController {
     @Autowired
     private HdfsUtil hdfsUtil;
 
+    @Autowired
+    RedisUtil redisUtil;
     private JsonModel jm;
 
     /**
@@ -52,8 +56,7 @@ public class UserController {
             @ApiImplicitParam(name = "email", value = "邮箱", required = false)}
     )
     public JsonModel registerOp(String name, String pwd1, String pwd2, String email) {
-        //System.out.println(pwd1 + " " + pwd2);
-        //
+
         jm = new JsonModel();
 
         if (EmptyUtil.isEmpty(name)) {
@@ -104,6 +107,7 @@ public class UserController {
     )
     public JsonModel loginOp(HttpSession session, String vcode, String name, String pwd) {
         jm = new JsonModel();
+        jm.setSessionId(session.getId());
         if (EmptyUtil.isEmpty(name)) {
             jm.setCode(0);
             jm.setMsg("请输入用户名！");
@@ -141,10 +145,14 @@ public class UserController {
         if (userBiz.login(u)) {
             //保存这个用户：在数据库中保存用户状态
             //TODO 更好的方案是使用一个数据库/Redis 来储存
-            session.setAttribute("name", u.getName());
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("name", u.getName());
+            hashMap.put("email",u.getEmail());
+            redisUtil.insert(session.getId(), hashMap);
+
+            //session.setAttribute("name", u.getName());
             jm.setCode(1);
             jm.setMsg("登陆成功");
-            //存用户数据到session中
             session.removeAttribute("validateCode");
             session.setAttribute("user", userBiz.getUserByName(name));
         } else {
@@ -158,19 +166,25 @@ public class UserController {
     @ApiOperation(value = "获取用户信息", notes = "User")
     public JsonModel getUser(HttpSession session) {
         jm = new JsonModel();
-        User user = (User) session.getAttribute("user");
+        jm.setSessionId(session.getId());
+        //User user = (User) session.getAttribute("user");
+        String name = redisUtil.getValue(session.getId(),"name");
+        String email = redisUtil.getValue(session.getId(),"email");
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
 
-        System.out.println();
+
         if (EmptyUtil.isEmpty(user)) {
 
-            String name = (String) session.getAttribute("name");
-            if (!EmptyUtil.isEmpty(name)) {
-                user = userBiz.getUserByName(name);
-                session.setAttribute("user", user);
-                jm.setCode(1);
-                jm.setObj(user);
-                return jm;
-            }
+           // String name = (String) session.getAttribute("name");
+//            if (!EmptyUtil.isEmpty(name)) {
+//                user = userBiz.getUserByName(name);
+//                session.setAttribute("user", user);
+//                jm.setCode(1);
+//                jm.setObj(user);
+//                return jm;
+//            }
 
             jm.setCode(0);
             jm.setMsg("您没有登录 请先登录!");
