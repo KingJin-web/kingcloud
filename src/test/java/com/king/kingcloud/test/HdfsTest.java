@@ -32,7 +32,7 @@ public class HdfsTest {
     FileSystem fileSystem = null;
     // 配置对象
     Configuration configuration = null;
-
+    FileSystem fsSource = null;
     @Before
     public void setUp() throws Exception {
         configuration = new Configuration();
@@ -40,6 +40,7 @@ public class HdfsTest {
         System.out.println(configuration.toString());
         fileSystem = FileSystem.get(new URI(HDFS_PATH), configuration, "root");
         System.out.println("HDFSAPP.setUp");
+        fsSource = FileSystem.get(URI.create(HDFS_PATH), configuration,"root");
 
 
         //方案二
@@ -155,11 +156,29 @@ public class HdfsTest {
     @Test
     public void query() throws IOException {
         Path path = new Path("/");
-        FileStatus[] fileStatuses = fileSystem.listStatus(path);
-        for (int i = 0; i < fileStatuses.length; i++) {
-            System.out.println(fileStatuses[i]);
-            System.out.println(fileStatuses[i].getPath().toString());
+
+        RemoteIterator<LocatedFileStatus> iter = fsSource.listFiles(path, true);
+        try {
+
+            //这里的第二个参数true表示递归遍历，false反之
+
+            while (iter.hasNext()){
+                LocatedFileStatus file = iter.next();
+                String Path_file = file.getPath().toString();
+                // 获取文件目录
+                System.out.println("user" + "$:" + Path_file.substring(21));
+
+                System.out.println(file.getPath().getName());
+                // 只获取文件名
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+//        FileStatus[] fileStatuses = fileSystem.listStatus(path);
+//        for (int i = 0; i < fileStatuses.length; i++) {
+//            System.out.println(fileStatuses[i]);
+//            System.out.println(fileStatuses[i].getPath().toString());
+//        }
     }
 
     /**
@@ -170,11 +189,12 @@ public class HdfsTest {
      */
     @Test
     public void checkFile() throws IOException {
-        FileStatus status = fileSystem.getFileStatus(new Path("/king"));
+        FileStatus status = fileSystem.getFileStatus(new Path("/king/你充钱了吗/logo.png"));
         BlockLocation[] blockLocations = fileSystem.getFileBlockLocations(status, 0, status.getLen());
         for (BlockLocation bl : blockLocations) {
             System.out.println(Arrays.toString(bl.getHosts()) + "\t" + Arrays.toString(bl.getNames()));
             System.out.println(Arrays.toString(blockLocations));
+
         }
     }
 

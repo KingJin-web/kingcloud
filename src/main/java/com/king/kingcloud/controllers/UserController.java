@@ -6,6 +6,7 @@ import com.king.kingcloud.util.EmptyUtil;
 import com.king.kingcloud.util.HdfsUtil;
 import com.king.kingcloud.util.RedisUtil;
 import com.king.kingcloud.vo.JsonModel;
+import com.king.kingcloud.vo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -143,18 +144,16 @@ public class UserController {
         u.setPwd(pwd);
         // resUserDao.login(u);
         if (userBiz.login(u)) {
+            UserVo userVo = EmptyUtil.UserToUserVo(userBiz.getUserByName(name));
             //保存这个用户：在数据库中保存用户状态
             //TODO 更好的方案是使用一个数据库/Redis 来储存
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("name", u.getName());
-            hashMap.put("email",u.getEmail());
-            redisUtil.insert(session.getId(), hashMap);
+            redisUtil.insertUserVo(session.getId(), userVo);
 
-            //session.setAttribute("name", u.getName());
             jm.setCode(1);
             jm.setMsg("登陆成功");
             session.removeAttribute("validateCode");
-            session.setAttribute("user", userBiz.getUserByName(name));
+            session.removeAttribute("oldTime");
+            //session.setAttribute("user", userBiz.getUserByName(name));
         } else {
             jm.setCode(0);
             jm.setMsg("用户名或密码错误！");
@@ -167,30 +166,25 @@ public class UserController {
     public JsonModel getUser(HttpSession session) {
         jm = new JsonModel();
         jm.setSessionId(session.getId());
-        //User user = (User) session.getAttribute("user");
-        String name = redisUtil.getValue(session.getId(),"name");
-        String email = redisUtil.getValue(session.getId(),"email");
-        User user = new User();
-        user.setName(name);
-        user.setEmail(email);
+
+//        String name = redisUtil.getValue(session.getId(),"name");
+//        String email = redisUtil.getValue(session.getId(),"email");
+//        User user = new User();
+//        user.setName(name);
+//        user.setEmail(email);
+
+        UserVo userVo = redisUtil.getUserVo(session.getId());
 
 
-        if (EmptyUtil.isEmpty(user)) {
-
-           // String name = (String) session.getAttribute("name");
-//            if (!EmptyUtil.isEmpty(name)) {
-//                user = userBiz.getUserByName(name);
-//                session.setAttribute("user", user);
-//                jm.setCode(1);
-//                jm.setObj(user);
-//                return jm;
-//            }
+        System.out.println(userVo.getName());
+        System.out.println(userVo.getName().equals("null"));
+        if (userVo.getName().equals("null") || EmptyUtil.isEmpty(userVo.getName())) {
 
             jm.setCode(0);
             jm.setMsg("您没有登录 请先登录!");
         } else {
             jm.setCode(1);
-            jm.setObj(user);
+            jm.setObj(userVo);
         }
 
         return jm;

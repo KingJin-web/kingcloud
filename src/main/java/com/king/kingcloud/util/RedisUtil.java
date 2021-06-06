@@ -1,17 +1,15 @@
 package com.king.kingcloud.util;
 
+import com.king.kingcloud.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @program: kingcloud
- * @description: redis 数据库list 操作帮助类
+ * @description: redis 数据库操作帮助类
  * @author: King
  * @create: 2021-06-05 18:57
  */
@@ -21,6 +19,7 @@ public class RedisUtil {
     private StringRedisTemplate redisTemplate;
 
     //TODO HashMap
+
     /**
      * 插入一个 map
      *
@@ -82,7 +81,7 @@ public class RedisUtil {
      */
     public String getValue(String key, String smallKey) {
         //1、通过redisTemplate获取
-        return (String) redisTemplate.boundHashOps(key).get(smallKey);
+        return String.valueOf(redisTemplate.boundHashOps(key).get(smallKey));
     }
 
     /**
@@ -119,41 +118,54 @@ public class RedisUtil {
      * @return
      */
     public Map getMap(String key) {
-        return redisTemplate.boundHashOps("HashKey").entries();
+        return redisTemplate.boundHashOps(key).entries();
     }
 
     public boolean hasKey(String key, String smallKey) {
         return redisTemplate.boundHashOps(key).hasKey(smallKey);
     }
-    public void push() {
-        redisTemplate.opsForList().rightPush("list4", "中文");
-        redisTemplate.opsForList().rightPush("list4", "中文");
-        redisTemplate.opsForList().rightPush("list4", "中文");
-        redisTemplate.opsForList().rightPush("list4", "four");
-        List<String> list4 = redisTemplate.opsForList().range("list4", 0, -1);
 
-    }
-    public void push(List<Object> list,String listName) {
 
-        List<String> list4 = redisTemplate.opsForList().range("list4", 0, -1);
-
-    }
-
-    public boolean lSet(String key, List<Object> value) {
+    /**
+     * 将userVo 对象转换为hashMap 存入redis
+     *
+     * @param key
+     * @param userVo
+     * @return
+     */
+    public boolean insertUserVo(String key, UserVo userVo) {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("uid", String.valueOf(userVo.getUid()));
+        hashMap.put("name", userVo.getName());
+        hashMap.put("email", userVo.getEmail());
+        hashMap.put("validateCode", userVo.getValidateCode());
 
         try {
-
-           // redisTemplate.opsForList().rightPushAll(key, value);
-
-            return true;
-
+            insert(key, hashMap);
         } catch (Exception e) {
 
             e.printStackTrace();
-
             return false;
-
         }
 
+        return true;
     }
+
+    public UserVo getUserVo(String key){
+
+        Map hashMap = getMap(key);
+        UserVo userVo = new UserVo();
+
+        userVo.setName(String.valueOf(hashMap.get("name")));
+        userVo.setUid((Integer) hashMap.get("id"));
+        userVo.setEmail(String.valueOf(hashMap.get("email")));
+        userVo.setValidateCode(String.valueOf(hashMap.get("validateCode")));
+
+//        System.out.println( getMap(key));
+//        System.out.println(userVo);
+
+
+        return userVo;
+    }
+
 }

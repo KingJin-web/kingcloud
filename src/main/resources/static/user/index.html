@@ -113,12 +113,12 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="index.html">全部文件</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">图片</a></dd>
-                        <dd><a href="javascript:;">文档</a></dd>
-                        <dd><a href="javascript:;">视频</a></dd>
-                        <dd><a href="javascript:;">种子</a></dd>
-                        <dd><a href="javascript:;">音乐</a></dd>
-                        <dd><a href="javascript:;">其他</a></dd>
+                        <dd><a href="picture.html#1">图片</a></dd>
+                        <dd><a href="picture.html#2">文档</a></dd>
+                        <dd><a href="picture.html#3">视频</a></dd>
+                        <dd><a href="picture.html#">种子</a></dd>
+                        <dd><a href="picture.html#4">音乐</a></dd>
+                        <dd><a href="picture.html#5">其他</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item">
@@ -146,17 +146,6 @@
 
 
         </div>
-        <!--        &lt;!&ndash;        上一页下一页按钮&ndash;&gt;-->
-        <!--        <div class="layui-btn-container layui-inline" style="padding: 5px;width: 100%">-->
-        <!--            &lt;!&ndash;            下一页 &#xe65b;layui-icon-next&ndash;&gt;-->
-        <!--            &lt;!&ndash;            上一页&#xe65a;layui-icon-prev&ndash;&gt;-->
-        <!--            <div class="layui-input-inline">-->
-        <!--                <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" @click="gotoPrev">-->
-        <!--                    <i class="layui-icon layui-icon-prev"></i>-->
-        <!--                    返回上一级-->
-        <!--                </button>-->
-        <!--            </div>-->
-        <!--        </div>-->
         <div style="width: 100%" id="fileTable">
 
             <table id="singers" lay-data="{initSort : {field:'size', type:'asc'}}" lay-filter="demo"
@@ -200,7 +189,6 @@
     function queryFile() {
         const path = king.getPath();
         let files = [];
-        console.log(path)
         axios.post('/getFile?path=' + path).then(res => {
             if (res.data.code === 1) {
                 files = res.data.obj;
@@ -212,7 +200,7 @@
                 let isDir = "";
 
                 for (const i of files) {
-                    console.log(i.path)
+                    //console.log(i.path)
                     // var dirPath = i.path;
                     if (i.is === false) {
                         console.log("路径错误")
@@ -276,8 +264,8 @@
                             });
                         } else if (layEvent === 'edit') { //编辑
                             //do something
-                            var oldName = path.substring(path.lastIndexOf("/") + 1,path.length) ;
-                            path = path.substring(0,path.lastIndexOf("/"));
+                            var oldName = path.substring(path.lastIndexOf("/") + 1, path.length);
+                            path = path.substring(0, path.lastIndexOf("/"));
                             console.log("oldName " + oldName + "  path " + path);
                             let data;
                             layerS.prompt({
@@ -291,7 +279,7 @@
                                 params.append('oldName', oldName);
                                 params.append('newName', value);
 
-                                axios.post("/changeFileName" , params).then(res => {
+                                axios.post("/changeFileName", params).then(res => {
                                     if (res.data.code === 0) {
                                         layerS.msg(res.data.msg)
                                     } else {
@@ -319,9 +307,9 @@
                     //     //obj.update(fields) //修改当前行数据
                     // });
                     //触发行双击事件
-                    tableS.on('rowDouble(demo)', function(obj){
-                            console.log(obj.tr) //得到当前行元素对象
-                            console.log(obj.data) //得到当前行数据
+                    tableS.on('rowDouble(demo)', function (obj) {
+                        console.log(obj.tr) //得到当前行元素对象
+                        console.log(obj.data) //得到当前行数据
                         //
                         //     obj.del(); //删除当前行
                         //     obj.update(fields) //修改当前行数据
@@ -343,6 +331,7 @@
         mounted: function () {
 
             axios.post('/getUser').then(res => {
+                console.log(res.data.code)
                 if (res.data.code === 0) {
                     gotoLogin(res.data.msg, "/index.html");
                 } else {

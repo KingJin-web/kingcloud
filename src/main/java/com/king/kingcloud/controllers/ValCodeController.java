@@ -31,7 +31,6 @@ public class ValCodeController {
         // System.out.println(date.getTime());
         long time = date.getTime();
         session.setAttribute("validateCode", vcode);
-
         session.setAttribute("oldTime", time);
         System.out.println(vcode);
     }

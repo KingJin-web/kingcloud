@@ -1,5 +1,6 @@
 package com.king.kingcloud.test;
 
+import com.king.kingcloud.bean.HdfsFileStatus;
 import com.king.kingcloud.util.HdfsUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,13 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.*;
+import java.util.List;
+
 import static org.junit.Assert.*;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class HdfsUtilTest {
 
     @Autowired
     private HdfsUtil hdfsUtil;
+
     @Test
     public void setHDFS_PATH() {
     }
@@ -24,10 +30,46 @@ public class HdfsUtilTest {
 
     @Test
     public void query() {
-        System.out.println(hdfsUtil.query("king","biz"));
+        System.out.println(hdfsUtil.query("king", "biz"));
     }
+
+    @Test
+    public void queryAll() {
+        System.out.println();
+        List<HdfsFileStatus> list = hdfsUtil.queryAll("king");
+        for (HdfsFileStatus hfs : list) {
+            System.out.println(hfs.getPath());
+        }
+    }
+
+    @Test
+    public void queryAllType() {
+        List<HdfsFileStatus> list = hdfsUtil.queryAllType("king", 1);
+        for (HdfsFileStatus hfs : list) {
+            System.out.println(hfs.getPath());
+        }
+    }
+
+    @Test
+    public void down() {
+        //hdfs://dn1:9000/king/文件夹5/元素定位.jpg
+        byte[] downFile = hdfsUtil.downFile("/king/文件夹5/元素定位.jpg");
+
+
+        File file2 = new File("D:\\元素定位.jpg");
+
+
+        try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file2))) {
+            bufferedOutputStream.write(downFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Test
     public void querya() {
         System.out.println(" ");
+        int a = 0;
     }
 }

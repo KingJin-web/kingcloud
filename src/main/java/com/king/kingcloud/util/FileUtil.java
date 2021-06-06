@@ -23,10 +23,6 @@ public class FileUtil {
         if (files == null || files.length == 0) {
             return false;
         }
-
-
-
-
         for (MultipartFile file : files) {
             String filePath = basePath + "/" + file.getOriginalFilename();
             makeDir(filePath);

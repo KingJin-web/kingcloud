@@ -1,6 +1,8 @@
 package com.king.kingcloud.util;
 
 
+import com.king.kingcloud.bean.User;
+import com.king.kingcloud.vo.UserVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
@@ -18,6 +20,16 @@ import java.util.Map;
 public class EmptyUtil extends Assert {
     public EmptyUtil() {
         super();
+    }
+
+
+    public static UserVo UserToUserVo(User user) {
+        UserVo userVo = new UserVo();
+        userVo.setEmail(user.getEmail());
+        userVo.setUid(user.getUid());
+        userVo.setName(user.getName());
+
+        return userVo;
     }
 
     public static String notNull(String msg, Object... objects) {

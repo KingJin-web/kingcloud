@@ -2,17 +2,21 @@ package com.king.kingcloud.util;
 
 import com.king.kingcloud.bean.HdfsFileStatus;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @program: kingcloud
@@ -129,7 +133,7 @@ public class HdfsUtil {
     public boolean upload(Path path, String name, String uploadPath) {
         Path path1 = new Path("/" + name + "/" + uploadPath);
         try {
-            fileSystem.copyFromLocalFile(path,path1);
+            fileSystem.copyFromLocalFile(path, path1);
             System.out.println(path.toUri());
             System.out.println(path1.toUri());
             return true;
@@ -139,6 +143,13 @@ public class HdfsUtil {
         }
     }
 
+    /**
+     * 获取指定文件夹下的所有·文件或文件夹
+     *
+     * @param name
+     * @param pathS
+     * @return
+     */
     public List<HdfsFileStatus> query(String name, String pathS) {
         Path path;
         if (pathS == null || pathS.equals("") || pathS.endsWith("undefined")) {
@@ -173,6 +184,70 @@ public class HdfsUtil {
         return list;
     }
 
+    public List<HdfsFileStatus> queryAll(String name) {
+        Path path = new Path("/" + name);
+        List<HdfsFileStatus> list = new ArrayList<>();
+
+        try {
+            RemoteIterator<LocatedFileStatus> iter = fileSystem.listFiles(path, true);
+            //这里的第二个参数true表示递归遍历，false反之
+            while (iter.hasNext()) {
+                HdfsFileStatus hfs = new HdfsFileStatus();
+                LocatedFileStatus file = iter.next();
+                //获取文件名
+                hfs.setName(file.getPath().getName());
+                hfs.setPath(getPathDeName(name, file.getPath()));
+                //获取文件是否为文件夹
+                hfs.setIsDirectory(file.isDirectory());
+                //文件上次修改时间
+                hfs.setModification_time(TimeUtil.timeToString(file.getModificationTime()));
+                hfs.setAccess_time(TimeUtil.timeToString(file.getAccessTime()));
+                //获取文件实际大小
+                hfs.setFileSize((fileSystem.getContentSummary(file.getPath()).getSpaceConsumed()) / 3);
+                hfs.setBlocksize(file.getBlockSize());
+                list.add(hfs);
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    /**
+     * 返回指定文件类型的
+     *
+     * @param name
+     * @param type 1 为图片 2 为文档 3 为视频 4 为音频
+     * @return
+     */
+    public List<HdfsFileStatus> queryAllType(String name, int type) {
+        Path path = new Path("/" + name);
+        List<HdfsFileStatus> list = queryAll(name);
+        List<HdfsFileStatus> list1 = new ArrayList<>();
+        String reg = null;
+        if (type == 1) {
+            reg = ".+(.jpeg|.jpg|.png|.bmp|.gif)$";
+        } else if (type == 2) {
+            reg = ".+(.txt|.doc|.docx|.xls|.xlsx|.html|.hml)$";
+        } else if (type == 3) {
+            reg = ".+(.mp4|.avi|.wmv)$";
+        } else if (type == 4) {
+            reg = ".+(.mp3|.wav)$";
+        } else if (type == 5) {
+            reg = ".+^\\s+\\.*$";
+        }
+
+        Pattern pattern = Pattern.compile(reg, Pattern.CASE_INSENSITIVE);
+        for (HdfsFileStatus hfs : list) {
+            if (pattern.matcher(hfs.getName()).find()) {
+
+                list1.add(hfs);
+            }
+        }
+        return list1;
+    }
 
     public boolean delete(String name, String dlPath) {
         Path path;
@@ -208,5 +283,51 @@ public class HdfsUtil {
     public String getPathDeName(String name, Path path) {
         String paths = String.valueOf(path);
         return paths.substring(paths.indexOf(name) + name.length());
+    }
+
+    public ResponseEntity<InputStreamResource> downFile(String name, String paths) {
+        Path path = new Path("/" + name + paths);
+
+        try (FSDataInputStream inputStream = fileSystem.open(path);) {
+
+            return downloadFile(inputStream, getFileName(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private ResponseEntity<InputStreamResource> downloadFile(FSDataInputStream inputStream, String fileName) throws IOException {
+        byte[] bytes = new byte[inputStream.available()];
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Cache-Control","no-cache, no-store, must-revalidate");
+
+
+        return ResponseEntity.ok().headers(httpHeaders).contentLength(bytes.length);
+    }
+
+    public byte[] downFile(String path) {
+        if (EmptyUtil.isEmpty(path)) {
+            return null;
+        }
+        byte[] bytes = null;
+        Path path1 = new Path(path);
+        try {
+
+            FSDataInputStream in = fileSystem.open(path1);
+            InputStream ins = in.getWrappedStream();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] bs = new byte[10 * 1024];
+            int length = 0;
+            while ((length = ins.read(bs, 0, bs.length)) != -1) {
+                baos.write(bs, 0, length);
+            }
+            baos.flush();
+            bytes = baos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return bytes;
     }
 }
