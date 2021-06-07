@@ -1,19 +1,24 @@
 package com.king.kingcloud.util;
 
 import com.king.kingcloud.bean.HdfsFileStatus;
+import org.apache.catalina.UserDatabase;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -26,6 +31,7 @@ import java.util.regex.Pattern;
  */
 @Repository
 public class HdfsUtil {
+
     // HDFS文件系统服务器的地址以及端口
     private String HDFS_PATH = "hdfs://dn1:9000";
     // HDFS文件系统的操作对象
@@ -223,26 +229,26 @@ public class HdfsUtil {
      * @return
      */
     public List<HdfsFileStatus> queryAllType(String name, int type) {
-        Path path = new Path("/" + name);
         List<HdfsFileStatus> list = queryAll(name);
         List<HdfsFileStatus> list1 = new ArrayList<>();
         String reg = null;
         if (type == 1) {
-            reg = ".+(.jpeg|.jpg|.png|.bmp|.gif)$";
+            reg = ".+(.jpeg|.jpg|.png|.bmp|.gif|.svg)$";
         } else if (type == 2) {
-            reg = ".+(.txt|.doc|.docx|.xls|.xlsx|.html|.hml)$";
+            reg = ".+(.txt|.doc|.docx|.xls|.xlsx|.html|.hml|.js|.pdf|.ppt|.cpp|.css)$";
         } else if (type == 3) {
-            reg = ".+(.mp4|.avi|.wmv)$";
+            reg = ".+(.mp4|.avi|.wmv|.flv)$";
         } else if (type == 4) {
             reg = ".+(.mp3|.wav)$";
         } else if (type == 5) {
-            reg = ".+^\\s+\\.*$";
+            reg = "^\\S+\\.*$";
+        } else {
+            reg = ".+(.torrent)$";
         }
 
         Pattern pattern = Pattern.compile(reg, Pattern.CASE_INSENSITIVE);
         for (HdfsFileStatus hfs : list) {
             if (pattern.matcher(hfs.getName()).find()) {
-
                 list1.add(hfs);
             }
         }
@@ -288,8 +294,8 @@ public class HdfsUtil {
     public ResponseEntity<InputStreamResource> downFile(String name, String paths) {
         Path path = new Path("/" + name + paths);
 
-        try (FSDataInputStream inputStream = fileSystem.open(path);) {
-
+        try {
+            FSDataInputStream inputStream = fileSystem.open(path);
             return downloadFile(inputStream, getFileName(path));
         } catch (IOException e) {
             e.printStackTrace();
@@ -298,12 +304,21 @@ public class HdfsUtil {
     }
 
     private ResponseEntity<InputStreamResource> downloadFile(FSDataInputStream inputStream, String fileName) throws IOException {
-        byte[] bytes = new byte[inputStream.available()];
+        Byte[] bytes = new Byte[inputStream.available()];
+        System.out.println(fileName);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Cache-Control","no-cache, no-store, must-revalidate");
+        httpHeaders.add("Cache-Control", "no-cache, no-store, must-revalidate");
+//        httpHeaders.add("Content-Disposition",String.format("attachment; filename=\"%s\"",fileName));
 
-
-        return ResponseEntity.ok().headers(httpHeaders).contentLength(bytes.length);
+//通过设置头信息给文件命名，也即是，在前端，文件流被接受完还原成原文件的时候会以你传递的文件名来命名
+        httpHeaders.add("Content-Disposition", String.format("attachment; filename=\"%s\"",
+                URLEncoder.encode(fileName, "utf-8")));
+        httpHeaders.add("Pragma", "no-cache");
+        httpHeaders.add("Expires", "0");
+        httpHeaders.add("Content-Language", "UTF-8");
+        System.out.println(httpHeaders);
+        return ResponseEntity.ok().headers(httpHeaders).contentLength(bytes.length)
+                .contentType(MediaType.parseMediaType("application/octet-stream;charset=UTF-8")).body(new InputStreamResource(inputStream));
     }
 
     public byte[] downFile(String path) {
@@ -329,5 +344,47 @@ public class HdfsUtil {
         }
 
         return bytes;
+    }
+
+    /**
+     * 输出成图片
+     *
+     * @return
+     * @throws IOException
+     */
+    public void outputImage(HttpServletResponse response, String path)
+            throws IOException {
+        // 随机生成验证码
+        // 图形写给浏览器
+        response.setContentType("image/jpeg");
+        // 发头控制浏览器不要缓存
+        response.setDateHeader("Expires", 0);
+        response.setHeader("Cache-Control", "no-cache");
+        response.setHeader("Pragma", "no-cache");
+        //允许跨域访问
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        // 获取响应输出流
+        OutputStream out = response.getOutputStream();
+        BufferedImage image = getImgBuffered(path);
+        // 输出图片
+        outputImage(image, out);
+
+    }
+
+    private BufferedImage getImgBuffered(String paths) {
+        BufferedImage bufferedImage = null;
+        Path path = new Path(paths);
+        try {
+            FSDataInputStream in = fileSystem.open(path);
+            bufferedImage = ImageIO.read(in);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bufferedImage;
+    }
+
+    public void outputImage(BufferedImage image, OutputStream os) throws IOException {
+        ImageIO.write(image, "jpg", os);
     }
 }

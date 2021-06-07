@@ -1,5 +1,6 @@
 package com.king.kingcloud.controllers;
 
+import com.king.kingcloud.util.EmptyUtil;
 import com.king.kingcloud.util.VerifyCodeUtils;
 import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,4 +36,13 @@ public class ValCodeController {
         System.out.println(vcode);
     }
 
+    @RequestMapping(value = "/HelloWorld", method = RequestMethod.GET)
+    public String HelloWorld(String name) throws IOException {
+        if (EmptyUtil.isEmpty(name)) {
+            return "HelloWorld";
+        } else {
+            return "HelloWorld" + name;
+        }
+
+    }
 }

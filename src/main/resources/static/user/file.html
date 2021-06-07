@@ -27,13 +27,11 @@
             let test = window.location.hash;
             test = decodeURI(test);
             test = test.substring(1, test.length);
-
             return test;
         }
 
         //JS
         let tableS; //表格模块
-
         let uploadS;//文件上传模块
         let elementS;
         layui.use(['table', 'element', 'util', 'upload'], function () {
@@ -140,7 +138,8 @@
 <script type="text/javascript">
 
     function initTable(type) {
-        if (type === undefined) {
+        console.log(type)
+        if (type === undefined||type === null||type === "") {
             type = 1;
         }
         tableS.render({
@@ -165,12 +164,14 @@
             ]]
         });
 
+        // var filePath = null;
         //监听行工具事件
         tableS.on('tool(test)', function (obj) {
             var data = obj.data;
             console.log(obj.event)
             console.log(data)
             var path = data.path
+            king.filePath = path;
             //console.log(obj)
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么 确认后直接删除不可找回 !'
@@ -220,11 +221,22 @@
             } else if (obj.event === 'goto') {
                 path = path.substring(0, path.lastIndexOf("/"))
                 window.location.href = "/user/index.html#" + path;
+            }else if (obj.event === 'down'){
+                download(path);
+                console.log(obj.event)
+                console.log(path)
             }
         });
 
     }
 
+    function download(filePath) {
+        let elemIf = document.createElement("iframe")
+        elemIf.src = "/downFile?path=" + filePath;
+        elemIf.style.display = "none";
+        document.body.appendChild(elemIf);
+
+    }
 </script>
 
 <script type="text/javascript">
@@ -233,6 +245,7 @@
         data: {
             user: {}, //用户信息
             path: '/', //路径信息
+            filePath: ''
         },
         mounted: function () {
             axios.post('/getUser').then(res => {
@@ -244,6 +257,15 @@
                 }
             });
 
+        },
+        methods: {
+            download: function (filePath) {
+                let elemIf = document.createElement("iframe")
+                elemIf.src = "/downFile?path=" + filePath;
+                elemIf.style.display = "none";
+                document.body.appendChild(elemIf);
+
+            }
         }
     });
 </script>

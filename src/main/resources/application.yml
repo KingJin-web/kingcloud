@@ -37,6 +37,9 @@ server:
   servlet:
     session:
       timeout: 6000
+    encoding:
+      charset: UTF-8
+      force: true
 
 
 logging:

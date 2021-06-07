@@ -3,6 +3,7 @@ package com.king.kingcloud.controllers;
 import com.king.kingcloud.bean.HdfsFileStatus;
 import com.king.kingcloud.util.HdfsUtil;
 import com.king.kingcloud.util.RedisUtil;
+import com.king.kingcloud.util.VerifyCodeUtils;
 import com.king.kingcloud.vo.JsonLayui;
 import com.king.kingcloud.vo.JsonModel;
 import io.swagger.annotations.Api;
@@ -17,7 +18,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -112,12 +117,6 @@ public class HdfsController {
         } else {
             List<HdfsFileStatus> list = hdfsUtil.queryAllType(name, type);
             int size = list.size();
-            int pages = (size / limit) + 1;
-            System.out.println("size:" + size);
-            System.out.println("page：" + page);
-            System.out.println("limit " + limit);
-            System.out.println("pages ：" + pages);
-
             int a = (page - 1) * limit; //开始行数
             int b = page * limit; //结束行数
             if (b > size) {
@@ -167,6 +166,15 @@ public class HdfsController {
         return jm;
     }
 
+    /**
+     * 修改文件名
+     *
+     * @param session
+     * @param path    路径
+     * @param oldName 文件名
+     * @param newName 新的文件名
+     * @return
+     */
     @RequestMapping(value = "/changeFileName", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiOperation(value = "重命名文件", notes = "重命名")
     @ApiImplicitParams({
@@ -215,16 +223,26 @@ public class HdfsController {
     @ApiOperation(value = "下载文件", notes = "下载")
     @ApiImplicitParam(name = "path", value = " path", required = true)
     public ResponseEntity<InputStreamResource> downFile(HttpSession session, @RequestParam("path") String path) {
+        System.out.println(path);
         jm = new JsonModel();
 
         String name = redisUtil.getValue(session.getId(), "name");
         ResponseEntity<InputStreamResource> res = null;
         try {
-            res = hdfsUtil.downFile(name,path);
-        }catch (Exception e){
+            res = hdfsUtil.downFile(name, path);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return res;
     }
+
+
+    @RequestMapping(value = "/lookPhoto", method = RequestMethod.GET)
+    public void lookPhoto(String path, HttpServletResponse resp) throws IOException {
+
+        hdfsUtil.outputImage(resp,path);
+
+    }
+
 }
