@@ -4,7 +4,7 @@ import lombok.Data;
 
 /**
  * @program: kingcloud
- * @description:
+ * @description: layui 规定的json 格式
  * @author: King
  * @create: 2021-06-06 11:48
  */

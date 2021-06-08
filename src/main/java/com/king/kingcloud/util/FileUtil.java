@@ -66,7 +66,15 @@ public class FileUtil {
         }
     }
 
-
+    /**
+     * 下载文件夹
+     *
+     * @param path
+     * @param filename
+     * @param request
+     * @return
+     * @throws IOException
+     */
     public static ResponseEntity downDir(String path, String filename, HttpServletRequest request) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cache-Control", "no-cache,no-store,must-revalidate");

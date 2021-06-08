@@ -1,30 +1,29 @@
-user表:
+## 项目介绍
 
-uid
-uname
-upwd
+基于hadoop hdfs 编写的网盘项目
 
+## 使用技术
 
-技术 :
+### 前端
 
-前端:   html5+css3+vue
+前端使用 layui 框架 使用了Vue Jquery a
 
-后端:   springboot+spring+jpa+spring security+验证码
+### 前端
 
-依赖管理: maven
+springboot + spring jpa + spring redis
 
-完成的功能:   参考百度云盘
-
+## 完成的功能: 
 用户登录
 文件列表
-上传
-下载
-复制
-移动
-重命名
+文件上传
+文件与文件夹下载 
+重命名 
+删除文件或文件夹 
+新建文件 
+部分文件预览
 
-按类别复筛选.
-
-查找
-排序
+## 项目截图
+![2](img/2.jpg)
+![1](img/1.jpg)
+![2](img/3.jpg)
 
