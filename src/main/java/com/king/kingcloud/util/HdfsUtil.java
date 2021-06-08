@@ -4,6 +4,7 @@ import com.king.kingcloud.bean.HdfsFileStatus;
 import org.apache.catalina.UserDatabase;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
+import org.apache.hadoop.io.IOUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,6 +23,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * @program: kingcloud
@@ -57,6 +60,34 @@ public class HdfsUtil {
             fileSystem = FileSystem.get(new URI(HDFS_PATH), configuration, "root");
         } catch (IOException | InterruptedException | URISyntaxException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * http://localhost:8080/downDir?path=/%E6%96%87%E4%BB%B6%E5%A4%B94/
+     * @param path
+     * @param stream1
+     * @throws IOException
+     */
+    public void compress(String path, ZipOutputStream stream1) throws IOException {
+        Path path1 = new Path(path);
+        FileStatus[] status = fileSystem.listStatus(path1);
+
+        String[] split = path.split("/");
+        String lastName = split[split.length - 1];
+        for (int i = 0; i < status.length; i++) {
+            String name = status[i].getPath().toString();
+            name = name.substring(name.indexOf("/" + lastName));
+            if (status[i].isFile()) {
+                Path path2 = status[i].getPath();
+                FSDataInputStream open = fileSystem.open(path2);
+                stream1.putNextEntry(new ZipEntry(name.substring(1)));
+                IOUtils.copyBytes(open, stream1, 1024);
+
+            } else {
+                stream1.putNextEntry(new ZipEntry(status[i].getPath().getName()+"/"));
+                compress(status[i].getPath().toString(),stream1);
+            }
         }
     }
 
@@ -130,6 +161,7 @@ public class HdfsUtil {
 
     /**
      * 上传文件
+     *
      *
      * @param path
      * @param name
@@ -339,6 +371,12 @@ public class HdfsUtil {
                 .contentType(MediaType.parseMediaType("application/octet-stream;charset=UTF-8")).body(new InputStreamResource(inputStream));
     }
 
+    /**
+     * 查看预览文档
+     *
+     * @param paths
+     * @return
+     */
     public StringBuilder lookDoc(String paths) {
         StringBuilder builder = new StringBuilder();
         Path path = new Path(paths);

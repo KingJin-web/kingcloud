@@ -16,9 +16,7 @@
 
     <script type="text/html" id="toolbarDemo">
         <div class="layui-btn-container">
-            <button type="button" class="layui-btn layui-btn-radius layui-btn-sm layui-btn-normal" onclick="gotoPre()">
-                返回上一级
-            </button>
+
         </div>
     </script>
     <script>
@@ -34,7 +32,7 @@
         let tableS; //表格模块
         let uploadS;//文件上传模块
         let elementS;
-        layui.use(['code','table', 'element', 'util', 'upload'], function () {
+        layui.use(['code', 'table', 'element', 'util', 'upload'], function () {
             const element = layui.element
                 , util = layui.util
                 , $ = layui.$;
@@ -70,8 +68,22 @@
         <div class="layui-logo layui-hide-xs layui-bg-blue">KingDrive</div>
         <!-- 头部区域（可配合layui 已有的水平导航） -->
         <ul class="layui-nav layui-layout-left layui-bg-cyan">
+            <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm"
+                lay-header-event="menuLeft">
+
+            </li>
+
+
+            <li class="layui-nav-item">
+                <label>
+                    <input type="text" >
+                </label>
+                <button class="layui-btn layui-btn-normal layui-btn-sm">搜索</button>
+            </li>
 
         </ul>
+
+
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item layui-hide layui-show-md-inline-block">
 
@@ -173,7 +185,6 @@
             console.log(obj.event)
             console.log(data)
             var path = data.path
-            king.filePath = path;
             //console.log(obj)
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么 确认后直接删除不可找回 !'
@@ -219,7 +230,6 @@
                 });
             } else if (obj.event === 'detail') {
                 //查看操作
-
                 //判断是否为图片
                 let patty = new RegExp(".+(.jpeg|.jpg|.png|.bmp|.gif|.JPG)$");
                 if (patty.test(data.name)) {
@@ -227,7 +237,7 @@
                     // //页面层-图片
                     layer.open({
                         type: 1,
-                        title: false,
+                        title: data.name,
                         closeBtn: 0,
                         area: ['900px', '506px'],
                         skin: 'layui-layer-nobg', //没有背景色
@@ -241,11 +251,12 @@
 
                 } else if (new RegExp(".+(.txt|.html|.hml|.js|.cpp|.css)$").test(data.name)) {
                     var txt;
-                    axios.post("/lookDoc?path=" +  path).then(res => {
+                    axios.post("/lookDoc?path=" + path).then(res => {
                         txt = res.data.data;
                         //弹窗 显示文字
                         layer.open({
                             type: 1,
+                            title: data.name,
                             shade: false,
                             area: ['900px', '506px'],
                             maxmin: true,
@@ -253,7 +264,7 @@
                                 txt +
                                 '</pre>',
                             zIndex: layer.zIndex, //重点1
-                            success: function(layero){
+                            success: function (layero) {
                                 layer.setTop(layero); //重点2
                             }
                         });
@@ -364,6 +375,7 @@
     {{ d.sex }}
     {{#  } }}
 </script>
+<!--图片自适应-->
 <script type="text/css">
     .div1 {
         width: 500px;

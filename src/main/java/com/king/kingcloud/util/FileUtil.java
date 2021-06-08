@@ -1,10 +1,21 @@
 package com.king.kingcloud.util;
 
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.hadoop.conf.Configuration;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.util.Date;
+import java.util.zip.ZipOutputStream;
 
 /**
  * @program: kingcloud
@@ -56,5 +67,30 @@ public class FileUtil {
     }
 
 
+    public static ResponseEntity downDir(String path, String filename, HttpServletRequest request) throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache,no-store,must-revalidate");
+        headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"",
+                URLEncoder.encode(filename + ".zip", "utf-8")));
 
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        headers.add("Content-Language", "UTF-8");
+        headers.add("Last-Modified", new Date().toString());
+        headers.add("ETag", String.valueOf(System.currentTimeMillis()));
+
+        ByteArrayOutputStream stream = (ByteArrayOutputStream) downloadDir(path);
+        byte[] bytes = stream.toByteArray();
+        stream.close();
+
+        return new ResponseEntity<>(bytes, headers, HttpStatus.SC_OK);
+    }
+
+    public static OutputStream downloadDir(String path) throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        ZipOutputStream stream1 = new ZipOutputStream(stream);
+        new HdfsUtil().compress(path, stream1);
+        stream1.close();
+        return stream;
+    }
 }

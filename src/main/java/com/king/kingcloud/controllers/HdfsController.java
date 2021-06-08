@@ -1,16 +1,14 @@
 package com.king.kingcloud.controllers;
 
 import com.king.kingcloud.bean.HdfsFileStatus;
-import com.king.kingcloud.util.EmptyUtil;
-import com.king.kingcloud.util.HdfsUtil;
-import com.king.kingcloud.util.RedisUtil;
-import com.king.kingcloud.util.VerifyCodeUtils;
+import com.king.kingcloud.util.*;
 import com.king.kingcloud.vo.JsonLayui;
 import com.king.kingcloud.vo.JsonModel;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.hadoop.fs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
@@ -257,6 +255,7 @@ public class HdfsController {
         return jm;
     }
 
+
     /**
      * 查看文档
      *
@@ -266,7 +265,7 @@ public class HdfsController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/lookDoc",  method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/lookDoc", method = {RequestMethod.GET, RequestMethod.POST})
     @ApiOperation(value = "查看文本文件", notes = "查看")
     @ApiImplicitParam(name = "path", value = " path", required = true)
     public JsonLayui lookDoc(String path, HttpServletResponse resp, HttpSession session) throws IOException {
@@ -282,5 +281,40 @@ public class HdfsController {
             jsonLayui.setMsg("OK");
         }
         return jsonLayui;
+    }
+
+    /**
+     * 下载文件夹
+     *
+     * @param path
+     * @param session
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/downDir", method = RequestMethod.GET)
+    public ResponseEntity<InputStreamResource> downDir(String path, HttpSession session, HttpServletRequest request) {
+        String name = redisUtil.getValue(session.getId(), "name");
+        ResponseEntity<InputStreamResource> result = null;
+        try {
+            String filename = hdfsUtil.getFileName(new Path(path));
+            path = "/" + name + path;
+            result = FileUtil.downDir(path, filename, request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * 获取 hadoop 服务器信息
+     *
+     * @return
+     */
+    @RequestMapping(value = "/LookHdfs", method = RequestMethod.GET)
+    public JsonLayui LookHdfs() {
+        JsonLayui js = new JsonLayui();
+
+
+        return js;
     }
 }

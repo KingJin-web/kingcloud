@@ -19,7 +19,7 @@
     let layerS; //弹出层
     let uploadS;//文件上传模块
     let elementS;
-    layui.use(['table', 'element', 'layer', 'util', 'upload'], function () {
+    layui.use(['code', 'table', 'element', 'layer', 'util', 'upload'], function () {
         const element = layui.element
             , layer = layui.layer
             , util = layui.util
@@ -47,6 +47,27 @@
         });
 
     });
+
+    /**
+     * 文件下载
+     * @param isFile
+     * @param filePath
+     */
+    function download(isFile, filePath) {
+        if (isFile) {
+            let elemIf = document.createElement("iframe")
+            elemIf.src = "/downFile?path=" + filePath;
+            elemIf.style.display = "none";
+            document.body.appendChild(elemIf);
+        } else {
+            let elemIf = document.createElement("iframe")
+            elemIf.src = "/downDir?path=" + filePath;
+            elemIf.style.display = "none";
+            document.body.appendChild(elemIf);
+        }
+
+
+    }
 </script>
 <body onload="queryFile()">
 
@@ -126,7 +147,6 @@
                 </li>
                 <li class="layui-nav-item">
                     <a href="javascript:;">回收站</a></li>
-
             </ul>
         </div>
     </div>
@@ -153,9 +173,9 @@
                 <thead>
                 <tr>
                     <th lay-data="{field:'fileName', width:300}">文件名</th>
-                    <th lay-data="{field:'size', width:80, sort:true}">大小</th>
+                    <th lay-data="{field:'size', width:100, sort:true}">大小</th>
                     <th lay-data="{field:'date' , sort:true}">修改日期</th>
-                    <th lay-data="{fixed: 'right',title:'操作',  width:200, align:'center', toolbar: '#barDemo'}"></th>
+                    <th lay-data="{fixed: 'right',title:'操作',  width:300, align:'center', toolbar: '#barDemo'}"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -179,8 +199,6 @@
     function FgetPath() {
         window.setTimeout(function () {
             console.log("你好啊！！！");
-            //$("#singers tr:nth-child(0)").nextAll().remove();
-            //$("#singers  tr:not(:first)").nextAll().remove();
             location.reload();
             queryFile()
         }, 300);
@@ -244,13 +262,67 @@
 
                         console.log(layEvent)
                         var path = data.fileName;
+                        console.log(path)
+                        var isFile;
+                        if (path.indexOf("文件.png") >= 0) {
+                            isFile = true;
+                        } else {
+                            isFile = false;
+                        }
+                        console.log(isFile)
                         //选中的文件路径 如果是文件附带文件名
                         path = path.substring(path.lastIndexOf("#") + 1, path.lastIndexOf('"'))
-                        console.log(path)
+                        var name = path.substring(path.lastIndexOf("/"), path.length);
+                        console.log(path + name)
 
 
                         let data1;
                         if (layEvent === 'detail') { //查看
+//查看操作
+                            //判断是否为图片
+                            let patty = new RegExp(".+(.jpeg|.jpg|.png|.bmp|.gif|.JPG)$");
+                            if (patty.test(name)) {
+                                //弹窗 显示图片
+                                // //页面层-图片
+                                layer.open({
+                                    type: 1,
+                                    title: name,
+                                    closeBtn: 0,
+                                    area: ['900px', '506px'],
+                                    skin: 'layui-layer-nobg', //没有背景色
+                                    shadeClose: true,
+                                    content:
+                                        "<div class='div1'>" +
+                                        "<img  src='/lookPhoto?path=" + path + "' alt=''>" +
+                                        "<a class='layui-btn layui-btn-normal' href='/lookPhoto?path=" + path + "'>查看原图</a>" +
+                                        "</div>"
+                                });
+
+                            } else if (new RegExp(".+(.txt|.html|.hml|.js|.cpp|.css)$").test(name)) {
+                                var txt;
+                                axios.post("/lookDoc?path=" + path).then(res => {
+                                    txt = res.data.data;
+                                    //弹窗 显示文字
+                                    layer.open({
+                                        type: 1,
+                                        title: name,
+                                        shade: false,
+                                        area: ['900px', '506px'],
+                                        maxmin: true,
+                                        content: '<pre class="layui-code" style="height: 100%">\n' +
+                                            txt +
+                                            '</pre>',
+                                        zIndex: layer.zIndex, //重点1
+                                    });
+
+                                });
+                                layui.code({
+                                    encode: true //是否转义html标签。默认不开启
+                                });
+                            } else {
+                                layer.msg('抱歉当前文件不支持预览', {icon: 6});
+                            }
+
                             //do somehing
                         } else if (layEvent === 'del') { //删除
                             layer.confirm('真的删除这个文件吗', function (index) {
@@ -293,8 +365,9 @@
                             //     username: '123'
                             //     , title: 'xxx'
                             // });
-                        } else if (layEvent === 'LAYTABLE_TIPS') {
-                            layer.alert('Hi，头部工具栏扩展的右侧图标。');
+                        } else if (layEvent === 'down') {
+                            console.log("layEvent down")
+                            download(isFile,path)
                         }
                     });
                     //
@@ -377,7 +450,6 @@
             },
             pop1: function () {
                 const that = this;
-                let data;
                 layerS.prompt({
                     formType: 0,
                     value: '',//初始值
@@ -424,15 +496,6 @@
     });
 
 </script>
-<script type="text/javascript">
-
-</script>
-
-<script>
-
-</script>
-
-
 </body>
 <!--表格工具-->
 <script type="text/html" id="toolbarDemo">
@@ -444,12 +507,15 @@
     </div>
 </script>
 <script type="text/html" id="barDemo">
-    <a title="我是鼠标悬停展示的内容" class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    <a title="查看" class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
     <button title="重命名" class="layui-btn layui-btn-xs" lay-event="edit">&nbsp;
         <i class="layui-icon layui-icon-edit"></i>&nbsp;
     </button>
     <button title="删除" class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">&nbsp;
         <i class="layui-icon layui-icon-delete"></i>&nbsp;
+    </button>
+    <button title="下载" class="layui-btn layui-btn-danger layui-btn-xs" lay-event="down">&nbsp;
+        <i class="layui-icon layui-icon-download-circle"></i>&nbsp;
     </button>
 </script>
 </html>

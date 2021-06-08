@@ -91,7 +91,7 @@ public class HdfsTest {
     @Test
     public void read() throws IOException {
 
-        FSDataInputStream fsDataInputStream = fileSystem.open(new Path("/king/文件1.txt"));
+        FSDataInputStream fsDataInputStream = fileSystem.open(new Path("/king/你充钱了吗/Pictures/Saved Pictures/desktop.ini"));
 
         InputStreamReader isr = new InputStreamReader(fsDataInputStream);
         BufferedReader bf = new BufferedReader(isr);
