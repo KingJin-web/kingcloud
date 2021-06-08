@@ -97,7 +97,7 @@ public class HdfsTest {
         BufferedReader bf = new BufferedReader(isr);
         String str;
         while ((str = bf.readLine()) != null) {
-            System.out.println(str);
+            System.out.println(str + "\n");
         }
         bf.close();
         isr.close();

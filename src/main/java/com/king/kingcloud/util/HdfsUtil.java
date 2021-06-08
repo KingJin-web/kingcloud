@@ -190,6 +190,12 @@ public class HdfsUtil {
         return list;
     }
 
+    /**
+     * 查询所有文件
+     *
+     * @param name
+     * @return
+     */
     public List<HdfsFileStatus> queryAll(String name) {
         Path path = new Path("/" + name);
         List<HdfsFileStatus> list = new ArrayList<>();
@@ -255,6 +261,13 @@ public class HdfsUtil {
         return list1;
     }
 
+    /**
+     * 删除文件
+     *
+     * @param name
+     * @param dlPath
+     * @return
+     */
     public boolean delete(String name, String dlPath) {
         Path path;
         if (name == null || dlPath == null || dlPath.equals("") || dlPath.endsWith("undefined")) {
@@ -291,6 +304,13 @@ public class HdfsUtil {
         return paths.substring(paths.indexOf(name) + name.length());
     }
 
+    /**
+     * 下载文件
+     *
+     * @param name
+     * @param paths
+     * @return
+     */
     public ResponseEntity<InputStreamResource> downFile(String name, String paths) {
         Path path = new Path("/" + name + paths);
 
@@ -308,9 +328,7 @@ public class HdfsUtil {
         System.out.println(fileName);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Cache-Control", "no-cache, no-store, must-revalidate");
-//        httpHeaders.add("Content-Disposition",String.format("attachment; filename=\"%s\"",fileName));
-
-//通过设置头信息给文件命名，也即是，在前端，文件流被接受完还原成原文件的时候会以你传递的文件名来命名
+        //通过设置头信息给文件命名，也即是，在前端，文件流被接受完还原成原文件的时候会以你传递的文件名来命名
         httpHeaders.add("Content-Disposition", String.format("attachment; filename=\"%s\"",
                 URLEncoder.encode(fileName, "utf-8")));
         httpHeaders.add("Pragma", "no-cache");
@@ -319,6 +337,26 @@ public class HdfsUtil {
         System.out.println(httpHeaders);
         return ResponseEntity.ok().headers(httpHeaders).contentLength(bytes.length)
                 .contentType(MediaType.parseMediaType("application/octet-stream;charset=UTF-8")).body(new InputStreamResource(inputStream));
+    }
+
+    public StringBuilder lookDoc(String paths) {
+        StringBuilder builder = new StringBuilder();
+        Path path = new Path(paths);
+        try (
+                FSDataInputStream in = fileSystem.open(path);
+                InputStreamReader isr = new InputStreamReader(in);
+                BufferedReader bf = new BufferedReader(isr);
+        ) {
+            String str;
+            while ((str = bf.readLine()) != null) {
+                builder.append(str).append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return builder;
+
     }
 
     public byte[] downFile(String path) {

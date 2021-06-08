@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -49,22 +50,17 @@ public class HdfsUtilTest {
             System.out.println(hfs.getPath());
         }
     }
-
+    @Test
+    public void Look(){
+        hdfsUtil.lookDoc("/king/文件夹1/文件夹4/css/login.css");
+    }
     @Test
     public void down() {
         //hdfs://dn1:9000/king/文件夹5/元素定位.jpg
-        byte[] downFile = hdfsUtil.downFile("/king/文件夹5/元素定位.jpg");
-
-
-        File file2 = new File("D:\\元素定位.jpg");
-
-
-        try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file2))) {
-            bufferedOutputStream.write(downFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        //hdfs://dn1:9000/king/文件夹1/文件夹4/css/login.css
+        byte[] downFile = hdfsUtil.downFile("/king/文件夹1/文件夹4/css/login.css");
+        String line = Arrays.toString(downFile);
+        System.out.println(line);
     }
 
     @Test

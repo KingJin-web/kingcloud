@@ -1,6 +1,7 @@
 package com.king.kingcloud.controllers;
 
 import com.king.kingcloud.bean.HdfsFileStatus;
+import com.king.kingcloud.util.EmptyUtil;
 import com.king.kingcloud.util.HdfsUtil;
 import com.king.kingcloud.util.RedisUtil;
 import com.king.kingcloud.util.VerifyCodeUtils;
@@ -239,10 +240,47 @@ public class HdfsController {
 
 
     @RequestMapping(value = "/lookPhoto", method = RequestMethod.GET)
-    public void lookPhoto(String path, HttpServletResponse resp) throws IOException {
-
-        hdfsUtil.outputImage(resp,path);
-
+    @ApiOperation(value = "查看图片", notes = "查看")
+    @ApiImplicitParam(name = "path", value = " path", required = true)
+    public JsonModel lookPhoto(String path, HttpServletResponse resp, HttpSession session) throws IOException {
+        jm = new JsonModel();
+        if (EmptyUtil.isEmpty(path)) {
+            jm.setCode(0);
+            jm.setMsg("ERROR");
+        } else {
+            String name = redisUtil.getValue(session.getId(), "name");
+            path = "/" + name + path;
+            hdfsUtil.outputImage(resp, path);
+            jm.setCode(1);
+            jm.setMsg("OK");
+        }
+        return jm;
     }
 
+    /**
+     * 查看文档
+     *
+     * @param path
+     * @param resp
+     * @param session
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "/lookDoc",  method = {RequestMethod.GET, RequestMethod.POST})
+    @ApiOperation(value = "查看文本文件", notes = "查看")
+    @ApiImplicitParam(name = "path", value = " path", required = true)
+    public JsonLayui lookDoc(String path, HttpServletResponse resp, HttpSession session) throws IOException {
+        JsonLayui jsonLayui = new JsonLayui();
+        if (EmptyUtil.isEmpty(path)) {
+            jsonLayui.setCode(0);
+            jsonLayui.setMsg("ERROR");
+        } else {
+            String name = redisUtil.getValue(session.getId(), "name");
+            path = "/" + name + path;
+            jsonLayui.setCode(1);
+            jsonLayui.setData(hdfsUtil.lookDoc(path));
+            jsonLayui.setMsg("OK");
+        }
+        return jsonLayui;
+    }
 }

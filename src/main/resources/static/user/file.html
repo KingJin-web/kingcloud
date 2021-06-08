@@ -34,13 +34,15 @@
         let tableS; //表格模块
         let uploadS;//文件上传模块
         let elementS;
-        layui.use(['table', 'element', 'util', 'upload'], function () {
+        layui.use(['code','table', 'element', 'util', 'upload'], function () {
             const element = layui.element
                 , util = layui.util
                 , $ = layui.$;
             tableS = layui.table;
             uploadS = layui.upload;
             elementS = layui.element;
+
+
             //头部事件
             util.event('lay-header-event', {
                 //左侧菜单事件
@@ -139,7 +141,7 @@
 
     function initTable(type) {
         console.log(type)
-        if (type === undefined||type === null||type === "") {
+        if (type === undefined || type === null || type === "") {
             type = 1;
         }
         tableS.render({
@@ -218,15 +220,63 @@
             } else if (obj.event === 'detail') {
                 //查看操作
 
+                //判断是否为图片
+                let patty = new RegExp(".+(.jpeg|.jpg|.png|.bmp|.gif|.JPG)$");
+                if (patty.test(data.name)) {
+                    //弹窗 显示图片
+                    // //页面层-图片
+                    layer.open({
+                        type: 1,
+                        title: false,
+                        closeBtn: 0,
+                        area: ['900px', '506px'],
+                        skin: 'layui-layer-nobg', //没有背景色
+                        shadeClose: true,
+                        content:
+                            "<div class='div1'>" +
+                            "<img  src='/lookPhoto?path=" + path + "' alt=''>" +
+                            "<a class='layui-btn layui-btn-normal' href='/lookPhoto?path=" + path + "'>查看原图</a>" +
+                            "</div>"
+                    });
+
+                } else if (new RegExp(".+(.txt|.html|.hml|.js|.cpp|.css)$").test(data.name)) {
+                    var txt;
+                    axios.post("/lookDoc?path=" +  path).then(res => {
+                        txt = res.data.data;
+                        //弹窗 显示文字
+                        layer.open({
+                            type: 1,
+                            shade: false,
+                            area: ['900px', '506px'],
+                            maxmin: true,
+                            content: '<pre class="layui-code" style="height: 100%">\n' +
+                                txt +
+                                '</pre>',
+                            zIndex: layer.zIndex, //重点1
+                            success: function(layero){
+                                layer.setTop(layero); //重点2
+                            }
+                        });
+
+                    });
+                    layui.code({
+                        encode: true //是否转义html标签。默认不开启
+                    });
+                } else {
+                    layer.msg('抱歉当前文件不支持预览', {icon: 6});
+                }
+
+
             } else if (obj.event === 'goto') {
                 path = path.substring(0, path.lastIndexOf("/"))
                 window.location.href = "/user/index.html#" + path;
-            }else if (obj.event === 'down'){
+            } else if (obj.event === 'down') {
                 download(path);
                 console.log(obj.event)
                 console.log(path)
             }
         });
+
 
     }
 
@@ -238,7 +288,9 @@
 
     }
 </script>
+<script type="text/html" id="tong">
 
+</script>
 <script type="text/javascript">
     const king = new Vue({
         el: '#main',
@@ -311,5 +363,21 @@
     {{#  } else { }}
     {{ d.sex }}
     {{#  } }}
+</script>
+<script type="text/css">
+    .div1 {
+        width: 500px;
+        height: 400px;
+        border: 1px solid black;
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .div1 img {
+        max-width: 100%;
+        max-height: 100%;
+        display: block;
+        margin: auto;
+    }
 </script>
 </html>
