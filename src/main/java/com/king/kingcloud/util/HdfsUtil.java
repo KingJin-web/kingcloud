@@ -5,6 +5,7 @@ import org.apache.catalina.UserDatabase;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -36,7 +37,8 @@ import java.util.zip.ZipOutputStream;
 public class HdfsUtil {
 
     // HDFS文件系统服务器的地址以及端口
-    private String HDFS_PATH = "hdfs://dn1:9000";
+
+    private String HDFS_PATH = "hdfs://wuzhaoqi.top:9000";
     // HDFS文件系统的操作对象
     private FileSystem fileSystem = null;
     // 配置对象
@@ -211,7 +213,7 @@ public class HdfsUtil {
                 hfs.setModification_time(TimeUtil.timeToString(fileStatus.getModificationTime()));
                 hfs.setAccess_time(TimeUtil.timeToString(fileStatus.getAccessTime()));
                 //获取文件实际大小
-                hfs.setFileSize((fileSystem.getContentSummary(fileStatus.getPath()).getSpaceConsumed()) / 3);
+                hfs.setFileSize((fileSystem.getContentSummary(fileStatus.getPath()).getSpaceConsumed()));
                 hfs.setBlocksize(fileStatus.getBlockSize());
                 list.add(hfs);
             }
@@ -247,7 +249,7 @@ public class HdfsUtil {
                 hfs.setModification_time(TimeUtil.timeToString(file.getModificationTime()));
                 hfs.setAccess_time(TimeUtil.timeToString(file.getAccessTime()));
                 //获取文件实际大小
-                hfs.setFileSize((fileSystem.getContentSummary(file.getPath()).getSpaceConsumed()) / 3);
+                hfs.setFileSize((fileSystem.getContentSummary(file.getPath()).getSpaceConsumed()));
                 hfs.setBlocksize(file.getBlockSize());
                 list.add(hfs);
 
