@@ -19,10 +19,6 @@
         <hadoop.version>2.7.3</hadoop.version>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jdbc</artifactId>
-        </dependency>
         <!--jpa依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -118,7 +114,7 @@
                 <configuration>
                     <excludes>
                         <exclude>
-                            <groupId>org.projectlombok</groupId>
+                            <groupId>org.projectors</groupId>
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>

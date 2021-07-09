@@ -46,7 +46,7 @@ public class UserBizImpl implements UserBiz {
     }
 
     /**
-     * 判断用户名是否呗使用
+     * 判断用户名是否被使用
      *
      * @param user
      * @return

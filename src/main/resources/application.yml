@@ -42,13 +42,13 @@ server:
       force: true
 
 
-logging:
-  level:
-    root: warn
-    org.springframework: warn
-  file:
-    path: ./logs
-    name: king.log
+#logging:
+#  level:
+#    root: warn
+#    org.springframework: warn
+#  file:
+#    path: ./logs
+#    name: king.log
 
 swagger:
   enabled: true

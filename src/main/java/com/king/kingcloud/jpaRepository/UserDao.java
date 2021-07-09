@@ -14,4 +14,5 @@ import org.springframework.stereotype.Service;
 
 @Repository
 public interface UserDao extends JpaRepository<User, Integer> {
+
 }

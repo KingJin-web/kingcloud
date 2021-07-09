@@ -38,7 +38,7 @@ public class HdfsUtil {
 
     // HDFS文件系统服务器的地址以及端口
 
-    private String HDFS_PATH = "hdfs://wuzhaoqi.top:9000";
+    private String HDFS_PATH = "hdfs://dn1:9000";
     // HDFS文件系统的操作对象
     private FileSystem fileSystem = null;
     // 配置对象
@@ -357,6 +357,7 @@ public class HdfsUtil {
         return null;
     }
 
+    //网络协议的拼接
     private ResponseEntity<InputStreamResource> downloadFile(FSDataInputStream inputStream, String fileName) throws IOException {
         Byte[] bytes = new Byte[inputStream.available()];
         System.out.println(fileName);

@@ -12,6 +12,7 @@ import lombok.Data;
 public class JsonLayui {
     private Integer code;
     private String msg;
+    //数据的多少
     private Integer count;
     private Object data;
 //    "code":0,"msg":"","count":1000,"data"
