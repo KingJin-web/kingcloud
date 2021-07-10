@@ -5,7 +5,7 @@ target/
 !**/src/test/**/target/
 !*log
 !*gz
-
+!.yml
 ### STS ###
 .apt_generated
 .classpath

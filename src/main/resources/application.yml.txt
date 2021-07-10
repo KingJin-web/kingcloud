@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://rm-2ze186x0og6jrp998fo.mysql.rds.aliyuncs.com:3306/kingcloud?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8
-    username: root
-    password: xuzrg5CK@BvkyEP
+    url: jdbc:mysql://你的数据库地址:3306/kingcloud?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=UTF-8
+    username: 数据库用户名
+    password: 数据库密码
   jpa:
     hibernate:
       ddl-auto: update
@@ -19,10 +19,10 @@ spring:
   thymeleaf:
     cache: false
   redis:
-    host: www.wuzhaoqi.top
+    host: redis数据库地址
     port: 6379
     database: 1
-    password: kingRedis
+    password: 数据库密码
     timeout: 5000ms
     jedis:
       pool:
