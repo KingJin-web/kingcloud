@@ -91,8 +91,6 @@ public class FileUploadController {
     @CrossOrigin
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ApiOperation(value = "上传文件到hdfs", notes = "上传")
-//    @ApiImplicitParams( {@ApiImplicitParam(name = "file", value = "file", required = true),
-//            @ApiImplicitParam(name = "uploadPath", value = "uploadPath", required = true)})
     public JsonModel file(@RequestParam("file") MultipartFile file, String uploadPath) {
         jm = new JsonModel();
         if (file.isEmpty()) {
@@ -100,7 +98,7 @@ public class FileUploadController {
             jm.setMsg("文件为空");
             return jm;
         }
-       // String name = (String) session.getAttribute("name");
+
         String name = redisUtil.getValue(session.getId(),"name");
         File path = new File(UploadPath + file.getOriginalFilename());
         try {
