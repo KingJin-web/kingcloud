@@ -1,7 +1,7 @@
 package com.king.kingcloud.controllers;
 
-import com.king.kingcloud.bean.User;
-import com.king.kingcloud.biz.UserBizImpl;
+import com.king.kingcloud.entity.User;
+import com.king.kingcloud.service.UserServiceImpl;
 import com.king.kingcloud.util.EmptyUtil;
 import com.king.kingcloud.util.HdfsUtil;
 import com.king.kingcloud.util.RedisUtil;
@@ -11,7 +11,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
-import java.util.HashMap;
 
 /**
  * @program: kingcloud
@@ -32,7 +30,7 @@ import java.util.HashMap;
 public class UserController {
 
     @Autowired
-    private UserBizImpl userBiz;
+    private UserServiceImpl userService;
 
     @Autowired
     private HdfsUtil hdfsUtil;
@@ -77,7 +75,7 @@ public class UserController {
             return jm;
         }
         User user = new User(null, name, pwd1, email);
-        if (userBiz.register(user)) {
+        if (userService.register(user)) {
             jm.setCode(1);
             jm.setMsg("注册成功！");
             hdfsUtil.mkdir(name);
@@ -143,8 +141,8 @@ public class UserController {
         u.setName(name);
         u.setPwd(pwd);
         // resUserDao.login(u);
-        if (userBiz.login(u)) {
-            UserVo userVo = EmptyUtil.UserToUserVo(userBiz.getUserByName(name));
+        if (userService.login(u)) {
+            UserVo userVo = EmptyUtil.UserToUserVo(userService.getUserByName(name));
             //保存这个用户：在数据库中保存用户状态
             //TODO 更好的方案是使用一个数据库/Redis 来储存
             redisUtil.insertUserVo(session.getId(), userVo);

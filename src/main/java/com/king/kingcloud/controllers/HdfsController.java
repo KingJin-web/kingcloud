@@ -1,6 +1,6 @@
 package com.king.kingcloud.controllers;
 
-import com.king.kingcloud.bean.HdfsFileStatus;
+import com.king.kingcloud.entity.HdfsFileStatus;
 import com.king.kingcloud.util.*;
 import com.king.kingcloud.vo.JsonLayui;
 import com.king.kingcloud.vo.JsonModel;
@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 /**

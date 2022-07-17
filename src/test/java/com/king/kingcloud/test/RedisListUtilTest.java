@@ -1,8 +1,8 @@
 package com.king.kingcloud.test;
 
 
-import com.king.kingcloud.bean.User;
-import com.king.kingcloud.biz.UserBizImpl;
+import com.king.kingcloud.entity.User;
+import com.king.kingcloud.service.UserServiceImpl;
 import com.king.kingcloud.util.RedisUtil;
 import com.king.kingcloud.vo.UserVo;
 import org.junit.Test;
@@ -12,8 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -36,7 +34,7 @@ public class RedisListUtilTest {
         redisUtil.insert(session, hashMap);
     }
     @Autowired
-    private UserBizImpl userBiz;
+    private UserServiceImpl userBiz;
 
     @Test
     public void testPush() {

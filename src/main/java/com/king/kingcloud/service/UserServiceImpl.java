@@ -1,8 +1,7 @@
-package com.king.kingcloud.biz;
+package com.king.kingcloud.service;
 
-import com.king.kingcloud.bean.User;
+import com.king.kingcloud.entity.User;
 import com.king.kingcloud.jpaRepository.UserDao;
-import jdk.nashorn.internal.parser.DateParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,7 +16,7 @@ import java.util.List;
  * @create: 2021-05-28 19:07
  */
 @Repository
-public class UserBizImpl implements UserBiz {
+public class UserServiceImpl implements UserService {
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 

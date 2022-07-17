@@ -1,6 +1,5 @@
 package com.king.kingcloud.vo;
 
-import com.king.kingcloud.bean.User;
 import lombok.Data;
 
 import java.io.Serializable;

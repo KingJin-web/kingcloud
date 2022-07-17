@@ -1,6 +1,6 @@
-package com.king.kingcloud.biz;
+package com.king.kingcloud.service;
 
-import com.king.kingcloud.bean.User;
+import com.king.kingcloud.entity.User;
 
 /**
  * @program: kingcloud
@@ -8,7 +8,7 @@ import com.king.kingcloud.bean.User;
  * @author: King
  * @create: 2021-05-28 19:04
  */
-public interface UserBiz {
+public interface UserService {
     /**
      * 注册
      *

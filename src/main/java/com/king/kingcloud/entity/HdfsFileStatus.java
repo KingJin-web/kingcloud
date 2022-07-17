@@ -1,9 +1,6 @@
-package com.king.kingcloud.bean;
+package com.king.kingcloud.entity;
 
 import lombok.Data;
-
-import org.apache.hadoop.fs.Path;
-import java.util.List;
 
 /**
  * @program: kingcloud

@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -42,6 +43,7 @@ public class FileUploadController {
     @Autowired
     private HdfsUtil hdfsUtil;
 
+    List<String> list = Arrays.asList("jpg", "png", "gif", "jpeg");
     @Autowired
     private RedisUtil redisUtil;
     private JsonModel jm;

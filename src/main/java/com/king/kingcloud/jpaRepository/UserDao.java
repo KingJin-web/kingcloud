@@ -1,9 +1,8 @@
 package com.king.kingcloud.jpaRepository;
 
-import com.king.kingcloud.bean.User;
+import com.king.kingcloud.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 /**
  * @program: kingcloud

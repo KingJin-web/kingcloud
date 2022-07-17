@@ -1,6 +1,6 @@
 package com.king.kingcloud.test;
 
-import com.king.kingcloud.KingcloudApplication;
+import com.king.kingcloud.KingCloudApplication;
 import com.king.kingcloud.controllers.FileUploadController;
 import org.junit.Test;
 import org.junit.platform.commons.logging.Logger;
@@ -32,7 +32,7 @@ public class FileTest {
     public void a(){
         System.out.println(fileUploadController.getUploadPath());;
     }
-    private static final Logger logger = LoggerFactory.getLogger(KingcloudApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(KingCloudApplication.class);
     public static void main(String[] args) {
 
         try {

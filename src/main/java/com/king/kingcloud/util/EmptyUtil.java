@@ -1,9 +1,8 @@
 package com.king.kingcloud.util;
 
 
-import com.king.kingcloud.bean.User;
+import com.king.kingcloud.entity.User;
 import com.king.kingcloud.vo.UserVo;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 import java.util.Arrays;
@@ -26,7 +25,7 @@ public class EmptyUtil extends Assert {
     public static UserVo UserToUserVo(User user) {
         UserVo userVo = new UserVo();
         userVo.setEmail(user.getEmail());
-        userVo.setUid(user.getUid());
+        userVo.setUid(user.getId());
         userVo.setName(user.getName());
 
         return userVo;
