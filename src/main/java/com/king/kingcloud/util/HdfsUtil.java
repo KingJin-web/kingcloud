@@ -1,6 +1,7 @@
 package com.king.kingcloud.util;
 
 import com.king.kingcloud.entity.HdfsFileStatus;
+import com.king.kingcloud.vo.JsonModel;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
@@ -10,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
@@ -179,6 +181,9 @@ public class HdfsUtil {
             return false;
         }
     }
+
+
+
 
     /**
      * 获取指定文件夹下的所有·文件或文件夹

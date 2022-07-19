@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 
 
 //@SpringBootApplication
-@SpringBootApplication(exclude = { SecurityAutoConfiguration.class})
+@SpringBootApplication()
 
 public class KingCloudApplication {
 

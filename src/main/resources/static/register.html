@@ -19,10 +19,10 @@
 
 <div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
     <div class="layadmin-user-login-main">
-		<div class="layadmin-user-login-box layadmin-user-login-header">
-		    <h2>刻课公开课</h2>
-		    <p></p>
-		</div>
+        <div class="layadmin-user-login-box layadmin-user-login-header">
+            <h2>KingCloud</h2>
+            <p></p>
+        </div>
         <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
             <div class="layui-form-item">
                 <label class="layadmin-user-login-icon layui-icon layui-icon-username"
@@ -38,23 +38,23 @@
                        class="layui-input"
                        v-model="email">
             </div>
-            <div class="layui-form-item">
-                <div class="layui-row">
-                    <div class="layui-col-xs7">
-                        <label class="layadmin-user-login-icon layui-icon layui-icon-vercode"
-                               for="LAY-user-login-vercode"></label>
-                        <input type="text" name="vercode" id="LAY-user-login-vercode" lay-verify="required"
-                               placeholder="验证码" class="layui-input" v-model="vcode">
-                    </div>
-                    <div class="layui-col-xs5">
-                        <div style="margin-left: 10px;">
-                            <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid"
-                                    id="LAY-user-getsmscode" @click="v_code">获取验证码
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!--            <div class="layui-form-item">-->
+<!--                <div class="layui-row">-->
+<!--                    <div class="layui-col-xs7">-->
+<!--                        <label class="layadmin-user-login-icon layui-icon layui-icon-vercode"-->
+<!--                               for="LAY-user-login-vercode"></label>-->
+<!--                        <input type="text" name="vercode" id="LAY-user-login-vercode" lay-verify="required"-->
+<!--                               placeholder="验证码" class="layui-input" v-model="vcode">-->
+<!--                    </div>-->
+<!--&lt;!&ndash;                    <div class="layui-col-xs5">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <div style="margin-left: 10px;">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <button type="button" class="layui-btn layui-btn-primary layui-btn-fluid"&ndash;&gt;-->
+<!--&lt;!&ndash;                                    id="LAY-user-getsmscode" @click="v_code">获取验证码&ndash;&gt;-->
+<!--&lt;!&ndash;                            </button>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                </div>-->
+<!--            </div>-->
             <div class="layui-form-item">
                 <label class="layadmin-user-login-icon layui-icon layui-icon-password"
                        for="LAY-user-login-password"></label>
@@ -70,8 +70,9 @@
                        v-model="pwd2">
             </div>
 
-            <div class="layui-form-item " >
-                <input  type="checkbox" id="checkbox" name="agreement" lay-skin="primary" title="<a href='agreement.html'>同意用户隐私协议</a>">
+            <div class="layui-form-item ">
+                <input type="checkbox" id="checkbox" name="agreement" lay-skin="primary"
+                       title="<a href='agreement.html'>同意用户隐私协议</a>">
             </div>
 
             <div class="layui-form-item">
@@ -85,24 +86,23 @@
             <!--                <a href="javascript:;"><i class="layui-icon layui-icon-login-wechat"></i></a>-->
             <!--                <a href="javascript:;"><i class="layui-icon layui-icon-login-weibo"></i></a>-->
 
-                            <a href="login.html" class="layadmin-user-jump-change layadmin-link layui-hide-xs">用已有帐号登入</a>
-                            <a href="login.html"
-                               class="layadmin-user-jump-change layadmin-link layui-hide-sm layui-show-xs-inline-block">登入</a>
-                        </div>
+            <a href="login.html" class="layadmin-user-jump-change layadmin-link layui-hide-xs">用已有帐号登入</a>
+            <a href="login.html"
+               class="layadmin-user-jump-change layadmin-link layui-hide-sm layui-show-xs-inline-block">登入</a>
         </div>
     </div>
-
-    <div class="layui-trans layadmin-user-login-footer">
-
-<!--        <p>© 2018 <a href="http://www.layui.com/" target="_blank">layui.com</a></p>-->
-<!--        <p>-->
-<!--            <span><a href="http://www.layui.com/admin/#get" target="_blank">获取授权</a></span>-->
-<!--            <span><a href="http://www.layui.com/admin/pro/" target="_blank">在线演示</a></span>-->
-<!--            <span><a href="http://www.layui.com/admin/" target="_blank">前往官网</a></span>-->
-<!--        </p>-->
-    </div>
-
 </div>
+
+<div class="layui-trans layadmin-user-login-footer">
+
+    <!--        <p>© 2018 <a href="http://www.layui.com/" target="_blank">layui.com</a></p>-->
+    <!--        <p>-->
+    <!--            <span><a href="http://www.layui.com/admin/#get" target="_blank">获取授权</a></span>-->
+    <!--            <span><a href="http://www.layui.com/admin/pro/" target="_blank">在线演示</a></span>-->
+    <!--            <span><a href="http://www.layui.com/admin/" target="_blank">前往官网</a></span>-->
+    <!--        </p>-->
+</div>
+
 
 <script type="text/javascript">
     const vue = new Vue({
@@ -128,7 +128,6 @@
                 })
             },
             register() {
-                let url = "user.do?op=register";
                 if (!$("input[type='checkbox']").is(':checked')) {
                     alertMy("请阅读并同意用户协议");
                     return;
@@ -137,16 +136,29 @@
                     alertMy("密码不一致");
                     return;
                 }
-                axios.get(url, {
-                    params: {
-                        name: this.name,
-                        pwd: this.pwd1,
-                        email: this.email,
-                        vcode1: this.vcode
+                let url = "/register.do";
+                let param = new URLSearchParams()
+                param.append('name', this.name)
+                param.append('pwd1', this.pwd1)
+                param.append('pwd2', this.pwd2);
+                param.append('email', this.email);
+
+                axios({
+                    method: 'post',
+                    url: url,
+                    data: param
+                }).then(function (res) {
+
+                    if (res.data.code === 0) {
+                        alertMy(res.data.msg)
+                    } else {
+                        alertLayer(res.data.msg, "/");
                     }
-                }).then((res) => {
-                    alertLayer(res.data, "login.html");
-                })
+                    console.log(res);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+
             }
         }
     });

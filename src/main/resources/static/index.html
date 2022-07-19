@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>登入 - KingDisk</title>
+    <title>登入 - KingCloud</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport"
@@ -42,7 +42,7 @@
 
         <div class="layadmin-user-login-box layadmin-user-login-header">
             <div class="alert alert-primary" role="alert">
-                <h2>KingDisk</h2>
+                <h2>KingCloud</h2>
             </div>
             <div class="alert alert-light" role="alert">
                 <div style="text-align:center ; margin: 0 auto;">
@@ -120,19 +120,49 @@
             vcode: ""
         },
         methods: {
-            login() {
-                //  var time = new Date().getTime();
-                let url = "login";
-                axios.get(url, {
-                    params: {
-                        name: this.name,
-                        pwd: this.pwd,
-                        vcode: this.vcode
+            login: function () {
+                let url = "/api/user/login.do";
+                let param = new URLSearchParams()
+                param.append('username', this.name)
+                param.append('password', this.pwd)
+                param.append('login_code', this.vcode);
+                console.log(this.vcode)
+                axios({
+                    method: 'post',
+                    url: url,
+                    data: param
+                }).then(function (res) {
+
+                    if (res.data.code === 0) {
+                        console.log("axios" + this.vcode)
+                        alertMy(res.data.msg)
+                    } else {
+                        alertLayer(res.data.msg, "/user/index.html");
                     }
-                }).then((res) => {
-                    alertLayer(res.data.msg, "user/index.html");
+                    console.log(res);
+                }).catch(function (error) {
+                    console.log(error);
                 });
+
+
             }
+            // login() {
+            //     //  var time = new Date().getTime();
+            //     let url = "/api/user/login.do";
+            //     axios.post(url, {
+            //         params: {
+            //             username: this.name,
+            //             password: this.pwd,
+            //             login_code: this.vcode
+            //         }
+            //     }).then((res) => {
+            //         if (res.data.code === 0) {
+            //             alertMy(res.data.msg);
+            //             return;
+            //         }
+            //         alertLayer(res.data.msg, "user/index.html");
+            //     });
+            // }
         }
     });
 

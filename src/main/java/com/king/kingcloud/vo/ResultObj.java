@@ -26,16 +26,26 @@ public class ResultObj implements Serializable {
     @ApiModelProperty(value = "解析数据长度")
     private Integer count;
     @ApiModelProperty(value = "解析数据列表")
+    private Object obj;
+    @ApiModelProperty(value = "解析数据列表")
     private Object data;
 
     public ResultObj() {
 
     }
 
-    public ResultObj(Integer code, String msg, Integer count, Object data) {
+    public ResultObj(Integer code, String msg, Integer count, Object obj) {
         this.code = code;
         this.msg = msg;
         this.count = count;
+        this.obj = obj;
+    }
+
+    public ResultObj(Integer code, String msg, Integer count, Object obj, Object data) {
+        this.code = code;
+        this.msg = msg;
+        this.count = count;
+        this.obj = obj;
         this.data = data;
     }
 
@@ -50,8 +60,12 @@ public class ResultObj implements Serializable {
         return error(0, msg);
     }
 
-    public static ResultObj obj(Integer code, String msg, Integer count, Object data) {
-        return new ResultObj(code, msg, count, data);
+    public static ResultObj obj(Integer code, String msg, Integer count, Object obj) {
+        return new ResultObj(code, msg, count, obj);
+    }
+
+    public static ResultObj obj(Integer code, String msg, Integer count, Object obj, Object data) {
+        return new ResultObj(code, msg, count, obj, data);
     }
 
     public static ResultObj obj(Integer code, String msg) {
@@ -90,13 +104,16 @@ public class ResultObj implements Serializable {
         return ok(o);
     }
 
-    public static ResultObj layui(Long total, Object data) {
-        return obj(0, "成功！", Math.toIntExact(total), data);
+    public static ResultObj layui(Long total, Object obj) {
+        return obj(0, "成功！", Math.toIntExact(total), obj);
     }
 
-    @NotNull
-    @Contract(value = "_, _ -> new", pure = true)
+
     public static ResultObj layui(int total, Object data) {
-        return obj(0, "成功！", total, data);
+        return obj(0, "成功！", total, data, data);
+    }
+
+    public static ResultObj layui(int total, Object data, String msg) {
+        return obj(0, msg, total, data, data);
     }
 }

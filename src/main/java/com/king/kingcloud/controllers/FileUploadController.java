@@ -1,30 +1,15 @@
 package com.king.kingcloud.controllers;
 
-import com.king.kingcloud.util.FileUtil;
-import com.king.kingcloud.util.HdfsUtil;
-import com.king.kingcloud.util.RedisUtil;
+import com.king.kingcloud.service.HdfsServiceImpl;
+import com.king.kingcloud.util.UserUtils;
 import com.king.kingcloud.vo.JsonModel;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.hadoop.fs.Path;
-import org.codehaus.jettison.json.JSONString;
-import org.mortbay.util.ajax.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.*;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -38,52 +23,21 @@ import java.util.List;
 @Api(value = "文件上传接口", tags = {"文件操作接口"})
 public class FileUploadController {
 
-    @Value(value = "${file.UploadPath}")
-    private String UploadPath;
-    @Autowired
-    private HdfsUtil hdfsUtil;
+    private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
-    List<String> list = Arrays.asList("jpg", "png", "gif", "jpeg");
-    @Autowired
-    private RedisUtil redisUtil;
-    private JsonModel jm;
 
+    private HdfsServiceImpl hdfsService;
 
     @Autowired
-    HttpSession session;
-
-    public String getUploadPath() {
-        return UploadPath;
+    public void setHdfsService(HdfsServiceImpl hdfsService) {
+        this.hdfsService = hdfsService;
     }
-
-    /**
-     * 实现文件上传
+/**
+     * 上传文件
+     *
+     * @param file
+     * @return
      */
-    @RequestMapping(value = "/uploads", method = RequestMethod.POST)
-
-    @ResponseBody
-    public String fileUpload(@RequestParam("fileName") MultipartFile file) {
-        if (file.isEmpty()) {
-            return "false";
-        }
-        String fileName = file.getOriginalFilename();
-        int size = (int) file.getSize();
-        System.out.println(fileName + "-->" + size);
-
-
-        File dest = new File(UploadPath + "/" + fileName);
-        if (!dest.getParentFile().exists()) { //判断文件父目录是否存在
-            dest.getParentFile().mkdir();
-        }
-        try {
-            file.transferTo(dest); //保存文件
-            return "true";
-        } catch (IllegalStateException | IOException e) {
-            e.printStackTrace();
-            return "false";
-        }
-    }
-
     /**
      * 上传文件
      *
@@ -94,48 +48,22 @@ public class FileUploadController {
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ApiOperation(value = "上传文件到hdfs", notes = "上传")
     public JsonModel file(@RequestParam("file") MultipartFile file, String uploadPath) {
-        jm = new JsonModel();
+
         if (file.isEmpty()) {
-            jm.setCode(0);
-            jm.setMsg("文件为空");
-            return jm;
+            return JsonModel.error("文件为空");
         }
 
-        String name = redisUtil.getValue(session.getId(),"name");
-        File path = new File(UploadPath + file.getOriginalFilename());
         try {
-            file.transferTo(path);
-            Path path1 = new Path(path.getPath());
-            hdfsUtil.upload(path1, name, uploadPath);
-            jm.setCode(1);
-            jm.setMsg("上传成功");
+            String name = UserUtils.getUser().getName();
+            hdfsService.upload(file, "/" + name + "/" + uploadPath);
+            return JsonModel.success("上传成功");
 
-        } catch (IllegalStateException | IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            jm.setCode(0);
-            jm.setMsg("上传失败");
-        }
-        return jm;
-    }
-
-    /**
-     * 上传文件夹
-     *
-     * @param files
-     * @return
-     */
-    @RequestMapping(value = "/uploadDir", method = RequestMethod.POST)
-    public String uploadFolder(MultipartFile[] files) {
-        session.getId();
-        System.out.println(Arrays.toString(files));
-        if (FileUtil.saveMultiFile(UploadPath, files)) {
-            return "ok";
-        } else {
-            return "no";
+            return JsonModel.error("上传失败");
         }
 
     }
-
 
 
 }

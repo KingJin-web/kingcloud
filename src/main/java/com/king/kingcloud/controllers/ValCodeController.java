@@ -3,6 +3,7 @@ package com.king.kingcloud.controllers;
 import com.king.kingcloud.util.EmptyUtil;
 import com.king.kingcloud.util.VerifyCodeUtils;
 import io.swagger.annotations.Api;
+import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,8 @@ import java.util.Date;
 @RestController
 @Api(value = "验证码接口", tags = {"验证码"})
 public class ValCodeController {
+
+    private final Logger logger = org.slf4j.LoggerFactory.getLogger(ValCodeController.class);
     @RequestMapping(value = "/verifyCodeServlet", method = RequestMethod.GET)
     public void valcode(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession();
@@ -31,9 +34,9 @@ public class ValCodeController {
         Date date = new Date();
         // System.out.println(date.getTime());
         long time = date.getTime();
-        session.setAttribute("validateCode", vcode);
+        session.setAttribute("login_code", vcode);
         session.setAttribute("oldTime", time);
-        System.out.println(vcode);
+        logger.info(vcode);
     }
 
     @RequestMapping(value = "/HelloWorld", method = RequestMethod.GET)

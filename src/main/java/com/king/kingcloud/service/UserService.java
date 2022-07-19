@@ -1,6 +1,8 @@
 package com.king.kingcloud.service;
 
 import com.king.kingcloud.entity.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  * @program: kingcloud
@@ -8,7 +10,7 @@ import com.king.kingcloud.entity.User;
  * @author: King
  * @create: 2021-05-28 19:04
  */
-public interface UserService {
+public interface UserService extends UserDetailsService {
     /**
      * 注册
      *

@@ -2,7 +2,10 @@ package com.king.kingcloud.service;
 
 import com.king.kingcloud.entity.HdfsFileStatus;
 import com.king.kingcloud.util.EmptyUtil;
+import com.king.kingcloud.util.MyException;
+import com.king.kingcloud.util.StringUtils;
 import com.king.kingcloud.util.TimeUtil;
+import com.king.kingcloud.vo.JsonModel;
 import com.king.kingcloud.vo.ResultObj;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -190,6 +193,9 @@ public class HdfsServiceImpl {
     }
 
     public boolean changeFileName(String uname, String path, String oldName, String newName) {
+        if (StringUtils.isEmpty(path, oldName, newName)) {
+            throw new MyException("路径或文件名不能为空!");
+        }
         try (FileSystem fileSystem = getFileSystem(HDFS_PATH, HDFS_USER)) {
             Path oldPath = new Path("/" + uname + "/" + path + "/" + oldName);
             Path newPath = new Path("/" + uname + "/" + path + "/" + newName);
@@ -420,7 +426,7 @@ public class HdfsServiceImpl {
      * @return
      */
     public ResponseEntity<InputStreamResource> downFile(String name, String paths) {
-        Path path = new Path(HDFS_PATH + paths);
+        Path path = new Path(HDFS_PATH +"/" + name + "/" + paths);
         FileSystem fileSystem = getFileSystem(HDFS_PATH, HDFS_USER);
         try {
             FSDataInputStream inputStream = fileSystem.open(path);
@@ -432,7 +438,8 @@ public class HdfsServiceImpl {
     }
 
     //网络协议的拼接
-    private ResponseEntity<InputStreamResource> downloadFile(FSDataInputStream inputStream, String fileName) throws
+    private ResponseEntity<InputStreamResource>
+    downloadFile(FSDataInputStream inputStream, String fileName) throws
             IOException {
         Byte[] bytes = new Byte[inputStream.available()];
         System.out.println(fileName);
@@ -455,8 +462,12 @@ public class HdfsServiceImpl {
      * @param paths
      * @return
      */
-    public StringBuilder lookDoc(String paths) {
+    public StringBuilder lookDoc(String name, String paths) {
 
+        if (StringUtils.isEmpty(paths)) {
+            throw new RuntimeException("文件路径不能为空");
+        }
+        paths = "/" + name + paths;
         StringBuilder builder = new StringBuilder();
         Path path = new Path(paths);
         try (
@@ -507,7 +518,7 @@ public class HdfsServiceImpl {
      * @return
      * @throws IOException
      */
-    public void outputImage(HttpServletResponse response, String path)
+    public void outputImage(HttpServletResponse response, String name, String path)
             throws IOException {
         // 随机生成验证码
         // 图形写给浏览器
@@ -520,19 +531,29 @@ public class HdfsServiceImpl {
         response.setHeader("Access-Control-Allow-Origin", "*");
         // 获取响应输出流
         OutputStream out = response.getOutputStream();
+
+        if (StringUtils.isEmpty(path)) {
+            throw new MyException("文件路径不能为空");
+        }
+        path = "/" + name + path;
         BufferedImage image = getImgBuffered(path);
         // 输出图片
+        logger.info("输出图片");
+
         outputImage(image, out);
 
     }
 
     private BufferedImage getImgBuffered(String paths) {
-        try (FileSystem fileSystem = getFileSystem(HDFS_PATH, HDFS_USER)) {
+        try {
+            FileSystem fileSystem = getFileSystem(HDFS_PATH, HDFS_USER);
             BufferedImage bufferedImage = null;
             Path path = new Path(paths);
 
             FSDataInputStream in = fileSystem.open(path);
-            return ImageIO.read(in);
+            logger.info("获取文件的输入流");
+            logger.info(in.toString());
+            return ImageIO.read(in.getWrappedStream());
 
         } catch (IOException e) {
             e.printStackTrace();
